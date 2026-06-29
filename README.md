@@ -1,9 +1,5 @@
 # StackScope
 
-I built this because I was tired of guessing.
-
-Every time I wanted to know what skills were actually in demand, or whether my stack was competitive, I had to manually scroll through dozens of job postings and piece things together in my head. There was no clean tool that gave developers in South Africa a real, data-driven picture of the market. So I built one. And now I use it.
-
 StackScope scrapes live developer job postings from PNet, Careers24 and Indeed South Africa, processes the data using NLP and machine learning, and surfaces it in a clean interface that answers the questions developers actually care about. What skills are hiring managers looking for. What is rising and what is falling. What a realistic salary range looks like. And how your own stack compares to what the market wants right now.
 
 ---
