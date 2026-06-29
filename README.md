@@ -52,7 +52,7 @@ StackScope/
 ## Setup
 
 ```bash
-git clone https://github.com/denzelchingodza/StackScope.git
+git clone https://github.com/denzelchingodza/StackScope
 cd StackScope
 pip install -r requirements.txt
 python run.py
