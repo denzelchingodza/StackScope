@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./database:/app/database
+    environment:
+      - FLASK_ENV=development
+    restart: unless-stopped
+
+  scraper:
+    build: .
+    command: python -c "from run import run_scrapers; run_scrapers()"
+    volumes:
+      - ./database:/app/database
+    depends_on:
+      - api
+    restart: "no"
