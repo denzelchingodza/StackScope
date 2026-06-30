@@ -1,5 +1,14 @@
+import os
+
+# loads .env file if it exists (ignored by git)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 #DATABASE
-DATABASE_PATH = "database/stackscope.db"
+DATABASE_PATH = os.environ.get("DATABASE_PATH", "database/stackscope.db")
 
 #scraper sources
 SOURCES = {
@@ -40,6 +49,6 @@ SCRAPE_DELAY = 2
 MAX_PAGES = 5
 
 #Flask API
-API_HOST = "0.0.0.0"
-API_PORT = 8080
-DEBUG = True
+API_HOST = os.environ.get("API_HOST", "0.0.0.0")
+API_PORT = int(os.environ.get("API_PORT", 8080))
+DEBUG = os.environ.get("DEBUG", "True") == "True"
