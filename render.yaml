@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: stackscope-api
+    runtime: docker
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_PATH
+        value: database/stackscope.db
