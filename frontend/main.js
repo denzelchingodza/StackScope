@@ -1,6 +1,6 @@
 // main.js
 
-const API = "http://localhost:8080";
+const API = "https://stackscope-m75j.onrender.com";
 
 async function get(endpoint) {
   const res = await fetch(`${API}${endpoint}`);
