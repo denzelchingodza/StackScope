@@ -3,7 +3,7 @@
 const API = "https://stackscope-m75j.onrender.com";
 
 async function get(endpoint) {
-  const res = await fetch(`${API}${endpoint}`);
+  const res = await fetch(`${API}${endpoint}`, { signal: AbortSignal.timeout(60000) });
   if (!res.ok) throw new Error(`Failed: ${endpoint}`);
   return res.json();
 }
