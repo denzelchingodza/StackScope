@@ -226,23 +226,6 @@ function renderResults(gap, matches) {
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
-// Level filter
-function filterLevel(level, btn) {
-  document.querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-
-  const rows = document.querySelectorAll("#jobs-body tr");
-  rows.forEach(row => {
-    if (level === "all") {
-      row.style.display = "";
-    } else {
-      const badge = row.querySelector(".lvl");
-      const rowLevel = badge ? badge.textContent.trim().toLowerCase() : "";
-      row.style.display = rowLevel === level ? "" : "none";
-    }
-  });
-}
-
 // Init
 async function init() {
   await Promise.all([loadStats(), loadBars(), loadJobs()]);
