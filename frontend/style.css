@@ -1,13 +1,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black: #0284c7;
+  --black: #0a0a0a;
   --white: #ffffff;
   --bg: #f9f9f7;
-  --border: #bae6fd;
-  --muted: #0369a1;
+  --border: #e8e8e6;
+  --muted: #a3a3a3;
   --text: #0a0a0a;
-  --sub: #075985;
+  --sub: #525252;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -165,12 +165,12 @@ nav {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  background: #bae6fd;
-  border-bottom: 1px solid #bae6fd;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .stat {
-  background: #e0f2fe;
+  background: var(--white);
   padding: 20px 24px;
   display: flex;
   flex-direction: column;
@@ -239,7 +239,7 @@ main {
 
 .bar-track {
   flex: 1;
-  background: #e0f2fe;
+  background: #f5f5f3;
   border-radius: 2px;
   height: 18px;
   overflow: hidden;
@@ -269,9 +269,9 @@ main {
   align-items: center;
   justify-content: space-between;
   padding: 9px 0;
-  border-bottom: 1px solid #e0f2fe;
+  border-bottom: 1px solid #f5f5f3;
   font-size: 13px;
-  color: var(--sub);
+  color: var(--black);
 }
 .trend-row:last-child { border-bottom: none; }
 
@@ -308,15 +308,15 @@ main {
   font-size: 12px;
   padding: 5px 13px;
   border-radius: 5px;
-  border: 1px solid #bae6fd;
-  background: #f0f9ff;
-  color: #0369a1;
+  border: 1px solid var(--border);
+  background: #fafafa;
+  color: var(--sub);
   cursor: pointer;
   transition: all 0.15s;
   user-select: none;
 }
-.skill-chip:hover { border-color: #0284c7; color: #0284c7; }
-.skill-chip.selected { background: #0284c7; color: var(--white); border-color: #0284c7; }
+.skill-chip:hover { border-color: var(--black); color: var(--black); }
+.skill-chip.selected { background: var(--black); color: var(--white); border-color: var(--black); }
 
 .matcher-actions {
   display: flex;
@@ -330,7 +330,7 @@ main {
 }
 
 .btn-primary {
-  background: #0284c7;
+  background: var(--black);
   color: var(--white);
   border: none;
   border-radius: 7px;
@@ -340,7 +340,7 @@ main {
   cursor: pointer;
   transition: background 0.15s;
 }
-.btn-primary:hover { background: #0369a1; }
+.btn-primary:hover { background: #1a1a1a; }
 
 .result-box {
   display: none;
@@ -410,13 +410,13 @@ main {
   background: #fafafa;
   transition: border-color 0.15s, background 0.15s;
 }
-.job-card:hover { border-color: #0284c7; background: var(--white); }
+.job-card:hover { border-color: var(--black); background: var(--white); }
 
 .job-pct {
   font-size: 11px;
   font-weight: 700;
-  color: #0284c7;
-  background: #e0f2fe;
+  color: var(--black);
+  background: #f0f0ee;
   padding: 2px 8px;
   border-radius: 3px;
   display: inline-block;
@@ -484,11 +484,11 @@ th {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #0284c7;
+  color: var(--muted);
   font-weight: 500;
-  background: #f0f9ff;
-  border-top: 1px solid #bae6fd;
-  border-bottom: 1px solid #bae6fd;
+  background: #fafafa;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 td {
@@ -508,8 +508,8 @@ tr:hover td { background: #fafafa; }
 .stag {
   font-size: 10px;
   padding: 2px 7px;
-  background: #e0f2fe;
-  color: #0369a1;
+  background: #f5f5f3;
+  color: var(--sub);
   border-radius: 3px;
 }
 
