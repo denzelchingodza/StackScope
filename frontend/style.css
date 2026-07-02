@@ -21,7 +21,7 @@ body {
 
 /* NAV */
 nav {
-  background: var(--black);
+  background: #1a1a24;
   height: 52px;
   padding: 0 36px;
   display: flex;
@@ -50,7 +50,7 @@ nav {
 
 /* HERO */
 .hero {
-  background: var(--black);
+  background: #111118;
   padding: 44px 36px 52px;
   display: flex;
   align-items: flex-end;
@@ -502,9 +502,10 @@ tr:hover td { background: #fafafa; }
 
 /* FOOTER */
 footer {
-  background: var(--black);
-  color: #737373;
+  background: #f9f9f7;
+  color: var(--sub);
   margin-top: 48px;
+  border-top: 1px solid var(--border);
 }
 
 .footer-inner {
@@ -519,21 +520,21 @@ footer {
 .footer-logo {
   font-size: 18px;
   font-weight: 700;
-  color: var(--white);
+  color: var(--text);
   letter-spacing: -0.01em;
   margin-bottom: 14px;
 }
 
 .footer-about {
   font-size: 12px;
-  color: #525252;
+  color: var(--sub);
   line-height: 1.7;
   margin-bottom: 14px;
 }
 
 .footer-built {
   font-size: 11px;
-  color: #404040;
+  color: var(--muted);
 }
 
 .footer-col-title {
@@ -541,29 +542,29 @@ footer {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: #525252;
+  color: var(--sub);
   margin-bottom: 14px;
 }
 
 .footer-link {
   display: block;
   font-size: 12px;
-  color: #525252;
+  color: var(--sub);
   text-decoration: none;
   margin-bottom: 9px;
   transition: color 0.15s;
 }
-.footer-link:hover { color: var(--white); }
+.footer-link:hover { color: var(--text); }
 
 .footer-note {
   font-size: 11px;
-  color: #404040;
+  color: var(--muted);
   line-height: 1.6;
   margin-top: 12px;
 }
 
 .footer-legal {
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid var(--border);
   max-width: 1040px;
   margin: 0 auto;
   padding: 32px 36px 40px;
@@ -583,13 +584,13 @@ footer {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.09em;
-  color: #404040;
+  color: var(--sub);
   margin-bottom: 10px;
 }
 
 .legal-block p {
   font-size: 11px;
-  color: #404040;
+  color: var(--muted);
   line-height: 1.7;
 }
 
@@ -597,8 +598,8 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #1a1a1a;
+  border-top: 1px solid var(--border);
   padding-top: 20px;
   font-size: 11px;
-  color: #404040;
+  color: var(--muted);
 }
