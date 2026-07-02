@@ -1,6 +1,7 @@
 # api/app.py
 
 import logging
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -21,7 +22,19 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+
+# In production DEBUG is False (see config.py); never expose the interactive debugger
+CORS(app, resources={r"/api/*": {"origins": os.environ.get("ALLOWED_ORIGINS", "*")}})
+
+# Generic error handlers — no stack traces in responses
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"error": "Not found"}), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    logger.error("Internal error: %s", e)
+    return jsonify({"error": "Internal server error"}), 500
 
 create_tables()
 
