@@ -121,6 +121,15 @@ nav {
   margin-left: auto;
 }
 
+.dev-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 18px 20px 10px;
+  display: inline-flex;
+  align-items: flex-end;
+}
+
 @keyframes dev-float {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-5px); }
@@ -438,6 +447,32 @@ main {
 /* TABLE */
 .table-card { padding: 0; overflow: hidden; }
 .table-card .card-label { padding: 18px 24px 0; }
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px 14px;
+}
+
+.level-filters {
+  display: flex;
+  gap: 6px;
+}
+
+.lvl-btn {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: #fafafa;
+  color: var(--sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lvl-btn:hover { border-color: var(--black); color: var(--black); }
+.lvl-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
 
 .table-wrap { overflow-x: auto; }
 
