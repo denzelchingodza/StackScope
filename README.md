@@ -132,7 +132,7 @@ StackScope/
 
 ## Disclaimer
 
-StackScope is an independent personal project. It is not affiliated with Indeed, PNet or Careers24. All data is scraped from publicly available job listings for analytical and educational purposes only. Salary figures and skill statistics are estimates and should not be treated as financial or career advice.
+StackScope is an independent personal project. It is not affiliated with Indeed, PNet or Careers24. All data is scraped from publicly available job listings for analytical and educational purposes only. Salary figures and skill statistics are estimates and should not be treated as financial/career advice.
 
 ---
 
