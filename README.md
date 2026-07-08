@@ -1,8 +1,11 @@
 # StackScope
-> Job search and scrapping application for devs.
----
+
 Job market intelligence for developers. See what skills are in demand, what pays, and how your stack compares to what employers actually want.
+
+**Live:** [stack-scope-eight.vercel.app](https://stack-scope-eight.vercel.app)
+
 ---
+
 ## What it does
 
 Scrapes live developer job postings from PNet, Careers24, and Indeed South Africa, then runs NLP and ML on the data to answer real questions:
