@@ -132,5 +132,48 @@ def jobs():
     return jsonify(get_all_jobs(limit=limit))
 
 
+@app.route("/api/scrape", methods=["POST"])
+def trigger_scrape():
+    """Manually trigger a scrape. Hit this from a free cron service daily."""
+    import threading
+    from database.db import save_job
+    from scraper.remotive import RemotiveScraper
+    from scraper.weworkremotely import WeWorkRemotelyScraper
+    from scraper.jobspresso import JobspressoScraper
+    from scraper.pnet import PNetScraper
+    from scraper.careers24 import Careers24Scraper
+    from scraper.indeed import IndeedScraper
+    from config import SOURCES
+
+    SCRAPER_MAP = {
+        "remotive": RemotiveScraper,
+        "weworkremotely": WeWorkRemotelyScraper,
+        "jobspresso": JobspressoScraper,
+        "pnet": PNetScraper,
+        "careers24": Careers24Scraper,
+        "indeed": IndeedScraper,
+    }
+
+    def scrape():
+        total = 0
+        for key, source in SOURCES.items():
+            if not source.get("enabled"):
+                continue
+            cls = SCRAPER_MAP.get(key)
+            if not cls:
+                continue
+            try:
+                scraped = cls(source).scrape()
+                for job in scraped:
+                    if save_job(job):
+                        total += 1
+            except Exception as e:
+                logger.warning(f"{source['name']} failed: {e}")
+        logger.info(f"Cron scrape done. {total} new jobs saved. Total: {get_job_count()}")
+
+    threading.Thread(target=scrape, daemon=True).start()
+    return jsonify({"status": "scrape started", "jobs_before": get_job_count()})
+
+
 if __name__ == "__main__":
     app.run(host=API_HOST, port=API_PORT, debug=DEBUG)
