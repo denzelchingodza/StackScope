@@ -10,12 +10,19 @@ from config import SKILLS
 logger = logging.getLogger(__name__)
 
 
-def match_jobs(user_skills: list[str], top_n: int = 10) -> list[dict]:
+def match_jobs(user_skills: list[str], top_n: int = 10,
+               experience_level: str = None, region: str = None) -> list[dict]:
     jobs = get_all_jobs()
 
     if not jobs:
         logger.warning("No jobs in database yet.")
         return []
+
+    # Apply level and region filters before matching
+    if experience_level and experience_level not in ("all", "unspecified", ""):
+        jobs = [j for j in jobs if j.get("experience_level") == experience_level]
+    if region and region not in ("all", ""):
+        jobs = [j for j in jobs if (j.get("country") or "").upper() == region.upper()]
 
     jobs_with_skills = [job for job in jobs if job["skills"]]
 
@@ -63,11 +70,16 @@ def match_jobs(user_skills: list[str], top_n: int = 10) -> list[dict]:
     return results
 
 
-def get_gap_score(user_skills: list[str]) -> dict:
+def get_gap_score(user_skills: list[str], experience_level: str = None, region: str = None) -> dict:
     jobs = get_all_jobs()
 
     if not jobs:
         return {}
+
+    if experience_level and experience_level not in ("all", "unspecified", ""):
+        jobs = [j for j in jobs if j.get("experience_level") == experience_level]
+    if region and region not in ("all", ""):
+        jobs = [j for j in jobs if (j.get("country") or "").upper() == region.upper()]
 
     all_skills = []
     for job in jobs:

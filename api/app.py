@@ -112,9 +112,12 @@ def match():
     if not data or "skills" not in data:
         return jsonify({"error": "Provide a skills list"}), 400
 
-    skills = data["skills"]
-    top_n = data.get("top_n", 10)
-    return jsonify(match_jobs(user_skills=skills, top_n=top_n))
+    return jsonify(match_jobs(
+        user_skills=data["skills"],
+        top_n=data.get("top_n", 10),
+        experience_level=data.get("experience_level"),
+        region=data.get("region"),
+    ))
 
 
 @app.route("/api/gap", methods=["POST"])
@@ -123,7 +126,11 @@ def gap():
     if not data or "skills" not in data:
         return jsonify({"error": "Provide a skills list"}), 400
 
-    return jsonify(get_gap_score(user_skills=data["skills"]))
+    return jsonify(get_gap_score(
+        user_skills=data["skills"],
+        experience_level=data.get("experience_level"),
+        region=data.get("region"),
+    ))
 
 
 @app.route("/api/jobs")

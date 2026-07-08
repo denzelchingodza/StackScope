@@ -375,21 +375,33 @@
     <!-- SKILL MATCHER -->
     <div class="card matcher" id="matcher">
       <div class="card-label">How do you compare?</div>
-      <p class="matcher-desc">Select the skills you know and we will show you exactly where you stand in the market.</p>
+      <p class="matcher-desc">Tell us your level, where you want to work, and what you know. We will show you how you rank against real live job postings and exactly what to focus on next.</p>
 
-      <div class="skill-groups">
-        <div class="skill-group">
-          <div class="group-label">Languages</div>
-          <div class="chip-row" id="g-lang"></div>
+      <!-- Step 1: Level -->
+      <div class="matcher-step">
+        <div class="step-label">1. Your experience level</div>
+        <div class="level-row" id="level-row">
+          <button class="level-btn active" onclick="setMatchLevel('all', this)">Any level</button>
+          <button class="level-btn" onclick="setMatchLevel('junior', this)">Junior</button>
+          <button class="level-btn" onclick="setMatchLevel('mid', this)">Mid</button>
+          <button class="level-btn" onclick="setMatchLevel('senior', this)">Senior</button>
         </div>
-        <div class="skill-group">
-          <div class="group-label">Frameworks</div>
-          <div class="chip-row" id="g-fw"></div>
+      </div>
+
+      <!-- Step 2: Region -->
+      <div class="matcher-step">
+        <div class="step-label">2. Where you want to work</div>
+        <div class="level-row" id="region-row">
+          <button class="level-btn active" onclick="setMatchRegion('all', this)">Anywhere</button>
+          <button class="level-btn" onclick="setMatchRegion('ZA', this)">South Africa</button>
+          <button class="level-btn" onclick="setMatchRegion('REMOTE', this)">Remote</button>
         </div>
-        <div class="skill-group">
-          <div class="group-label">Databases and tools</div>
-          <div class="chip-row" id="g-tools"></div>
-        </div>
+      </div>
+
+      <!-- Step 3: Skills -->
+      <div class="matcher-step">
+        <div class="step-label">3. Skills you know</div>
+        <div class="skill-groups" id="skill-groups"></div>
       </div>
 
       <div class="matcher-actions">
@@ -404,15 +416,15 @@
         </div>
         <div class="gap-cols">
           <div>
-            <div class="group-label">You have</div>
+            <div class="group-label">In your stack</div>
             <div class="chip-row" id="have-chips"></div>
           </div>
           <div>
-            <div class="group-label">Learn next</div>
+            <div class="group-label">Add to your stack</div>
             <div class="chip-row" id="miss-chips"></div>
           </div>
         </div>
-        <div class="card-label" style="margin-top:20px;margin-bottom:12px">Best matching jobs</div>
+        <div class="card-label" style="margin-top:24px;margin-bottom:12px">Best matching jobs</div>
         <div class="job-cards" id="job-cards"></div>
       </div>
     </div>

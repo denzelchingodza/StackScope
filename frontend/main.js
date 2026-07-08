@@ -113,40 +113,107 @@ async function post(endpoint, body) {
   return res.json();
 }
 
-// Skill selector setup
-const skillGroups = {
-  "g-lang":  ["Python", "JavaScript", "TypeScript", "Java", "Go", "C#", "SQL", "Rust"],
-  "g-fw":    ["React", "Node.js", "Django", "FastAPI", "Flask", "Vue", "Angular", "Spring"],
-  "g-tools": ["PostgreSQL", "MongoDB", "Docker", "AWS", "Git", "Linux", "Redis", "Kubernetes"],
-};
+// ── SKILL MATCHER ────────────────────────────────────────────────────
+// [value sent to API, display label]
+const SKILL_GROUPS = [
+  { label: "Languages", chips: [
+    ["python","Python"],["javascript","JavaScript"],["typescript","TypeScript"],
+    ["java","Java"],["c#","C#"],["c++","C++"],["go","Go"],["rust","Rust"],
+    ["ruby","Ruby"],["php","PHP"],["swift","Swift"],["kotlin","Kotlin"],
+    ["scala","Scala"],["elixir","Elixir"],["bash","Bash"],["clojure","Clojure"],
+  ]},
+  { label: "Frontend", chips: [
+    ["react","React"],["vue","Vue"],["angular","Angular"],["next.js","Next.js"],
+    ["svelte","Svelte"],["html","HTML"],["css","CSS"],["tailwind","Tailwind"],
+    ["webpack","Webpack"],["vite","Vite"],
+  ]},
+  { label: "Backend", chips: [
+    ["node.js","Node.js"],["django","Django"],["flask","Flask"],["fastapi","FastAPI"],
+    ["spring","Spring"],["rails","Rails"],["laravel","Laravel"],["express","Express"],
+    ["graphql","GraphQL"],["rest api","REST API"],["grpc","gRPC"],
+  ]},
+  { label: "Data and AI", chips: [
+    ["machine learning","Machine Learning"],["deep learning","Deep Learning"],
+    ["tensorflow","TensorFlow"],["pytorch","PyTorch"],["scikit-learn","scikit-learn"],
+    ["pandas","Pandas"],["numpy","NumPy"],["spark","Spark"],["airflow","Airflow"],
+    ["dbt","dbt"],["llm","LLM"],["openai","OpenAI"],["langchain","LangChain"],
+    ["data engineering","Data Engineering"],["data science","Data Science"],
+  ]},
+  { label: "Databases", chips: [
+    ["postgresql","PostgreSQL"],["mysql","MySQL"],["mongodb","MongoDB"],
+    ["redis","Redis"],["elasticsearch","Elasticsearch"],["sqlite","SQLite"],
+    ["dynamodb","DynamoDB"],["cassandra","Cassandra"],["snowflake","Snowflake"],
+    ["bigquery","BigQuery"],["supabase","Supabase"],["sql","SQL"],
+  ]},
+  { label: "DevOps and Cloud", chips: [
+    ["docker","Docker"],["kubernetes","Kubernetes"],["aws","AWS"],
+    ["azure","Azure"],["gcp","GCP"],["terraform","Terraform"],
+    ["ansible","Ansible"],["github actions","GitHub Actions"],["jenkins","Jenkins"],
+    ["linux","Linux"],["git","Git"],["ci/cd","CI/CD"],
+  ]},
+  { label: "Other", chips: [
+    ["cybersecurity","Cybersecurity"],["microservices","Microservices"],
+    ["api design","API Design"],["system design","System Design"],
+    ["blockchain","Blockchain"],["solidity","Solidity"],
+    ["embedded","Embedded"],["iot","IoT"],
+  ]},
+];
 
 const selected = new Set();
+let matcherLevel  = "all";
+let matcherRegion = "all";
 
-Object.entries(skillGroups).forEach(([id, skills]) => {
-  const container = document.getElementById(id);
+function setMatchLevel(val, btn) {
+  matcherLevel = val;
+  document.getElementById("level-row").querySelectorAll(".level-btn")
+    .forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function setMatchRegion(val, btn) {
+  matcherRegion = val;
+  document.getElementById("region-row").querySelectorAll(".level-btn")
+    .forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function updateSelCount() {
+  const n = selected.size;
+  document.getElementById("sel-count").textContent =
+    n === 0 ? "0 skills selected" :
+    n === 1 ? "1 skill selected" : `${n} skills selected`;
+}
+
+// Build skill chip groups
+(function buildSkillGroups() {
+  const container = document.getElementById("skill-groups");
   if (!container) return;
-  skills.forEach(skill => {
-    const chip = document.createElement("span");
-    chip.className = "skill-chip";
-    chip.textContent = skill;
-    chip.addEventListener("click", () => {
-      const key = skill.toLowerCase();
-      if (selected.has(key)) {
-        selected.delete(key);
-        chip.classList.remove("selected");
-      } else {
-        selected.add(key);
-        chip.classList.add("selected");
-      }
-      const count = selected.size;
-      document.getElementById("sel-count").textContent =
-        count === 0 ? "0 skills selected" :
-        count === 1 ? "1 skill selected" :
-        `${count} skills selected`;
+  SKILL_GROUPS.forEach(group => {
+    const groupEl = document.createElement("div");
+    groupEl.className = "skill-group";
+    groupEl.innerHTML = `<div class="group-label">${group.label}</div>`;
+    const row = document.createElement("div");
+    row.className = "chip-row";
+    group.chips.forEach(([value, label]) => {
+      const chip = document.createElement("span");
+      chip.className = "skill-chip";
+      chip.textContent = label;
+      chip.addEventListener("click", () => {
+        if (selected.has(value)) {
+          selected.delete(value);
+          chip.classList.remove("selected");
+        } else {
+          selected.add(value);
+          chip.classList.add("selected");
+        }
+        updateSelCount();
+      });
+      row.appendChild(chip);
     });
-    container.appendChild(chip);
+    groupEl.appendChild(row);
+    container.appendChild(groupEl);
   });
-});
+})();
 
 // Skill frequency bars
 async function loadBars() {
@@ -404,34 +471,30 @@ async function analyse() {
   }
 
   const skills = [...selected];
+  const btn = document.querySelector(".btn-primary");
+  if (btn) { btn.textContent = "Analysing..."; btn.disabled = true; }
 
   try {
     const [gap, matches] = await Promise.all([
-      post("/api/gap",   { skills }),
-      post("/api/match", { skills, top_n: 3 }),
+      post("/api/gap",   { skills, experience_level: matcherLevel, region: matcherRegion }),
+      post("/api/match", { skills, experience_level: matcherLevel, region: matcherRegion, top_n: 5 }),
     ]);
     renderResults(gap, matches);
   } catch {
-    // fallback demo result
-    const allSkills = ["python","javascript","sql","react","docker","typescript","git","java","postgresql","aws","node.js","linux","mongodb","redis","django"];
-    const have    = skills.filter(s => allSkills.includes(s));
-    const missing = allSkills.filter(s => !skills.includes(s)).slice(0, 6);
-    const score   = Math.min(96, Math.round((have.length / allSkills.length) * 100 * 3 + 8));
     renderResults(
-      { score: Math.min(96, score), have, missing, summary: summaryText(score) },
-      [
-        { title: "Junior Python Developer", company: "DataCore",   location: "Remote",     match_score: 91, url: "#" },
-        { title: "Backend Engineer",        company: "FinTech SA", location: "Cape Town",  match_score: 84, url: "#" },
-        { title: "Full Stack Developer",    company: "BuildCo",    location: "Joburg",     match_score: 76, url: "#" },
-      ]
+      { score: 0, have: [], missing: [], summary: "Could not load results. Make sure the backend is awake." },
+      []
     );
+  } finally {
+    if (btn) { btn.textContent = "See my results"; btn.disabled = false; }
   }
 }
 
 function summaryText(score) {
-  if (score >= 70) return "Strong alignment with the market. You match most of what employers are asking for right now.";
-  if (score >= 45) return "Solid foundation. A few additions would open up significantly more roles.";
-  return "Good start. The skills below are your fastest path to more job matches.";
+  if (score >= 75) return "Strong market alignment. You cover most of what employers are hiring for right now.";
+  if (score >= 50) return "Good foundation. A few targeted additions would open up significantly more roles.";
+  if (score >= 25) return "Solid start. The skills below are your fastest path to more job matches.";
+  return "Early stage. Focus on the top missing skills to build market relevance quickly.";
 }
 
 function renderResults(gap, matches) {
@@ -439,20 +502,28 @@ function renderResults(gap, matches) {
   document.getElementById("score-desc").textContent = gap.summary || summaryText(gap.score);
 
   document.getElementById("have-chips").innerHTML =
-    (gap.have || []).map(s => `<span class="chip-have">${s}</span>`).join("") ||
-    `<span class="chip-miss">none matched yet</span>`;
+    (gap.have || []).length
+      ? (gap.have).map(s => `<span class="chip-have">${cap(s)}</span>`).join("")
+      : `<span style="font-size:12px;color:#94a3b8">None of the top skills matched yet</span>`;
 
   document.getElementById("miss-chips").innerHTML =
-    (gap.missing || []).map(s => `<span class="chip-miss">${s}</span>`).join("");
+    (gap.missing || []).slice(0, 8).map(s => `<span class="chip-miss">${cap(s)}</span>`).join("");
 
   document.getElementById("job-cards").innerHTML =
-    (matches || []).map(j => `
-      <div class="job-card">
-        <span class="job-pct">${j.match_score}% match</span>
-        <div class="job-title-c">${j.title}</div>
-        <div class="job-co-c">${j.company} &middot; ${j.location}</div>
-        <a class="job-link" href="${j.url || "#"}" target="_blank" rel="noopener">View posting</a>
-      </div>`).join("");
+    (matches || []).length
+      ? matches.map(j => `
+          <div class="job-card">
+            <span class="job-pct">${j.match_score}% match</span>
+            ${j.experience_level && j.experience_level !== "unspecified"
+              ? `<span class="job-level-badge">${cap(j.experience_level)}</span>` : ""}
+            <div class="job-title-c">${j.title}</div>
+            <div class="job-co-c">${j.company} &middot; ${j.location}</div>
+            ${(j.missing_skills || []).length
+              ? `<div class="job-card-missing">${j.missing_skills.slice(0,3).map(s => `<span class="chip-gap">${cap(s)}</span>`).join("")}</div>`
+              : ""}
+            <a class="job-link" href="${j.url || "#"}" target="_blank" rel="noopener">View posting</a>
+          </div>`).join("")
+      : `<p style="font-size:13px;color:#94a3b8;padding:4px 0">No matching jobs found for these filters. Try broadening your level or region.</p>`;
 
   const box = document.getElementById("result-box");
   box.style.display = "block";
