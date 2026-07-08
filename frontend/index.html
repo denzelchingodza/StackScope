@@ -66,137 +66,60 @@
     #loader {
       position: fixed;
       inset: 0;
-      background: #020c18;
+      background: #060f1e;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 9999;
-      overflow: hidden;
-      transition: opacity 0.6s ease;
+      transition: opacity 0.45s ease;
     }
     #loader.hidden { opacity: 0; pointer-events: none; }
-
-    /* floating skill tags in background */
-    .loader-tags {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .ltag {
-      position: absolute;
-      bottom: -40px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      padding: 5px 12px;
-      border-radius: 99px;
-      border: 1px solid rgba(56,189,248,0.18);
-      color: rgba(56,189,248,0.35);
-      background: rgba(56,189,248,0.04);
-      animation: floatUp linear infinite;
-      white-space: nowrap;
-    }
-    @keyframes floatUp {
-      0%   { transform: translateY(0) scale(0.9);   opacity: 0; }
-      10%  { opacity: 1; }
-      85%  { opacity: 0.6; }
-      100% { transform: translateY(-110vh) scale(1.05); opacity: 0; }
-    }
-
-    /* center card */
-    .loader-card {
-      position: relative;
+    .loader-center {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
     }
-    .loader-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #0369a1, #6366f1);
+    .loader-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      box-shadow: 0 0 40px rgba(99,102,241,0.35);
+      margin-bottom: 16px;
     }
-    .loader-icon svg { width: 26px; height: 26px; }
-    .loader-logo {
-      font-size: 26px;
+    .loader-mark svg { width: 22px; height: 22px; }
+    .loader-name {
+      font-size: 22px;
       font-weight: 800;
       color: #fff;
       letter-spacing: -0.03em;
-      margin-bottom: 6px;
+      margin-bottom: 30px;
     }
-    .loader-sub {
-      font-size: 12px;
-      color: #475569;
-      margin-bottom: 32px;
-      letter-spacing: 0.02em;
-    }
-
-    /* scanning bar */
-    .loader-scan {
-      width: 260px;
-      margin-bottom: 14px;
-    }
-    .loader-scan-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #334155;
-      margin-bottom: 7px;
-    }
-    .loader-scan-source {
-      color: #38bdf8;
-      font-weight: 600;
-      min-width: 140px;
-    }
-    .loader-bar-track {
-      width: 100%;
+    .loader-track {
+      width: 140px;
       height: 2px;
-      background: #0f2035;
+      background: rgba(255,255,255,0.08);
       border-radius: 99px;
       overflow: hidden;
+      margin-bottom: 14px;
     }
-    .loader-bar-fill {
+    .loader-fill {
       height: 100%;
-      background: linear-gradient(90deg, #0ea5e9, #6366f1);
+      background: #fff;
       border-radius: 99px;
-      animation: sweep 1.6s ease-in-out infinite;
+      animation: ld-sweep 1.3s ease-in-out infinite;
     }
-    @keyframes sweep {
-      0%   { width: 0%;  margin-left: 0%; }
-      50%  { width: 55%; margin-left: 25%; }
-      100% { width: 0%;  margin-left: 100%; }
+    @keyframes ld-sweep {
+      0%   { width: 0%;   margin-left: 0%; }
+      50%  { width: 50%;  margin-left: 25%; }
+      100% { width: 0%;   margin-left: 100%; }
     }
-
-    /* source pills */
-    .loader-sources {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 20px;
-      max-width: 300px;
-    }
-    .lsrc {
-      font-size: 10px;
-      font-weight: 600;
+    .loader-msg {
+      font-size: 11px;
+      color: rgba(255,255,255,0.22);
       letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 99px;
-      border: 1px solid #1e3a52;
-      color: #334155;
-      transition: color 0.3s, border-color 0.3s;
-    }
-    .lsrc.active {
-      color: #38bdf8;
-      border-color: #38bdf8;
     }
   </style>
 </head>
@@ -204,28 +127,15 @@
 
   <!-- LOADING SCREEN -->
   <div id="loader">
-    <div class="loader-tags" id="loader-tags"></div>
-    <div class="loader-card">
-      <div class="loader-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="loader-center">
+      <div class="loader-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#060f1e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
       </div>
-      <div class="loader-logo">StackScope</div>
-      <div class="loader-sub">Job market intelligence for developers</div>
-      <div class="loader-scan">
-        <div class="loader-scan-label">
-          <span class="loader-scan-source" id="loader-source">Connecting...</span>
-          <span id="loader-elapsed">0s</span>
-        </div>
-        <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
-      </div>
-      <div class="loader-sources">
-        <span class="lsrc" id="lsrc-adzuna">Adzuna SA</span>
-        <span class="lsrc" id="lsrc-remotive">Remotive</span>
-        <span class="lsrc" id="lsrc-wwr">We Work Remotely</span>
-        <span class="lsrc" id="lsrc-jobspresso">Jobspresso</span>
-      </div>
+      <div class="loader-name">StackScope</div>
+      <div class="loader-track"><div class="loader-fill"></div></div>
+      <div class="loader-msg" id="loader-source">Connecting...</div>
     </div>
   </div>
 
