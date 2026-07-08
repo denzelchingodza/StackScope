@@ -2,8 +2,6 @@
 
 Job market intelligence for developers. See what skills are in demand, what pays, and how your stack compares to what employers actually want.
 
-**Live:** [stack-scope-eight.vercel.app](https://stack-scope-eight.vercel.app)
-
 ---
 
 ## What it does
