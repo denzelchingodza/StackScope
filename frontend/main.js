@@ -2,37 +2,99 @@
 
 const API = "https://stackscope-m75j.onrender.com";
 
-// Wake up the Render backend before loading anything
+// ── LOADER ──────────────────────────────────────────────────────────
+const LOADER_SKILLS = [
+  "Python","React","Docker","TypeScript","AWS","Node.js","Kubernetes",
+  "PostgreSQL","Go","Rust","FastAPI","GraphQL","Terraform","Redis",
+  "Machine Learning","Vue","Spring","MongoDB","Azure","GCP","SQL",
+  "CI/CD","Pandas","PyTorch","Linux","Git","Next.js","Elixir","Scala",
+];
+
+const LOADER_SOURCES = [
+  { id: "lsrc-remotive",   label: "Scanning Remotive..." },
+  { id: "lsrc-wwr",        label: "Checking We Work Remotely..." },
+  { id: "lsrc-jobspresso", label: "Loading Jobspresso..." },
+  { id: "lsrc-pnet",       label: "Fetching PNet..." },
+  { id: "lsrc-careers24",  label: "Fetching Careers24..." },
+  { id: "lsrc-indeed",     label: "Fetching Indeed SA..." },
+];
+
+function spawnTag(container) {
+  const tag = document.createElement("span");
+  tag.className = "ltag";
+  tag.textContent = LOADER_SKILLS[Math.floor(Math.random() * LOADER_SKILLS.length)];
+  tag.style.left = Math.random() * 92 + "%";
+  const dur = 7 + Math.random() * 8;
+  tag.style.animationDuration = dur + "s";
+  tag.style.animationDelay = (Math.random() * -dur) + "s";
+  container.appendChild(tag);
+  setTimeout(() => tag.remove(), (dur + 1) * 1000);
+}
+
+function startFloatingTags() {
+  const container = document.getElementById("loader-tags");
+  if (!container) return;
+  // seed initial tags
+  for (let i = 0; i < 14; i++) spawnTag(container);
+  return setInterval(() => spawnTag(container), 700);
+}
+
 async function waitForBackend() {
   const loader = document.getElementById("loader");
-  const msg = document.getElementById("loader-msg");
+  const sourceEl = document.getElementById("loader-source");
+  const elapsedEl = document.getElementById("loader-elapsed");
   const maxWait = 60000;
-  const interval = 3000;
+  const pollInterval = 3000;
   const start = Date.now();
+
+  const tagTimer = startFloatingTags();
+
+  // Cycle through source labels while waiting
+  let srcIdx = 0;
+  const srcTimer = setInterval(() => {
+    if (sourceEl) sourceEl.textContent = LOADER_SOURCES[srcIdx % LOADER_SOURCES.length].label;
+    const pill = document.getElementById(LOADER_SOURCES[srcIdx % LOADER_SOURCES.length].id);
+    if (pill) pill.classList.add("active");
+    srcIdx++;
+  }, 2200);
+
+  // Elapsed counter
+  const clockTimer = setInterval(() => {
+    const s = Math.round((Date.now() - start) / 1000);
+    if (elapsedEl) elapsedEl.textContent = s + "s";
+  }, 1000);
+
+  const cleanup = () => {
+    clearInterval(tagTimer);
+    clearInterval(srcTimer);
+    clearInterval(clockTimer);
+  };
 
   while (Date.now() - start < maxWait) {
     try {
       const res = await fetch(`${API}/api/health`, { signal: AbortSignal.timeout(5000) });
       if (res.ok) {
-        msg.textContent = "Ready.";
-        await new Promise(r => setTimeout(r, 400));
+        if (sourceEl) sourceEl.textContent = "Ready.";
+        LOADER_SOURCES.forEach(s => {
+          const el = document.getElementById(s.id);
+          if (el) el.classList.add("active");
+        });
+        cleanup();
+        await new Promise(r => setTimeout(r, 600));
         loader.classList.add("hidden");
-        setTimeout(() => loader.remove(), 600);
+        setTimeout(() => loader.remove(), 700);
         return;
       }
-    } catch {
-      // still sleeping
-    }
-    const elapsed = Math.round((Date.now() - start) / 1000);
-    msg.textContent = `Starting up... (${elapsed}s)`;
-    await new Promise(r => setTimeout(r, interval));
+    } catch { /* still sleeping */ }
+    await new Promise(r => setTimeout(r, pollInterval));
   }
 
-  // Timed out — hide loader anyway
-  msg.textContent = "Taking longer than usual...";
-  await new Promise(r => setTimeout(r, 1000));
+  // Timed out
+  if (sourceEl) sourceEl.textContent = "Taking longer than usual...";
+  cleanup();
+  await new Promise(r => setTimeout(r, 1200));
   loader.classList.add("hidden");
-  setTimeout(() => loader.remove(), 600);
+  setTimeout(() => loader.remove(), 700);
 }
 
 waitForBackend();
