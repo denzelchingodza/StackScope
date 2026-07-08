@@ -1,11 +1,19 @@
 # scraper/base.py
 
+import re
 import requests
 import time
 import logging
 from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
 from config import REQUEST_TIMEOUT, SCRAPE_DELAY, SKILLS
+
+# Pre-compile one regex per skill using word boundaries.
+# re.escape handles special chars like c#, c++, next.js, ci/cd.
+_SKILL_PATTERNS = [
+    (skill, re.compile(r'\b' + re.escape(skill) + r'\b', re.IGNORECASE))
+    for skill in SKILLS
+]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -50,8 +58,7 @@ class BaseScraper(ABC):
             return None
 
     def extract_skills(self, text: str) -> str:
-        text_lower = text.lower()
-        found = [skill for skill in SKILLS if skill in text_lower]
+        found = [skill for skill, pattern in _SKILL_PATTERNS if pattern.search(text)]
         return ", ".join(found)
 
     def detect_experience_level(self, text: str) -> str:

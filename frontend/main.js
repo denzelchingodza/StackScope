@@ -192,16 +192,70 @@ function renderBars(data) {
 // Stats
 async function loadStats() {
   try {
-    const [health, salary] = await Promise.all([
-      get("/api/health"),
-      get("/api/salary/stats"),
-    ]);
+    const health = await get("/api/health");
     if (health.jobs_tracked !== undefined) {
       document.getElementById("stat-jobs").textContent =
         health.jobs_tracked.toLocaleString();
     }
+  } catch { /* keep placeholder */ }
+
+  try {
+    const salary = await get("/api/salary/stats");
+    const avg = salary?.avg_salary_min ?? salary?.avg ?? null;
+    if (avg) {
+      const el = document.getElementById("stat-salary");
+      if (el) el.textContent = "R" + Math.round(avg).toLocaleString();
+    } else {
+      const el = document.getElementById("stat-salary");
+      if (el) el.textContent = "No data yet";
+    }
   } catch {
-    // keep default values already in the HTML
+    const el = document.getElementById("stat-salary");
+    if (el) el.textContent = "No data yet";
+  }
+}
+
+// Trends
+async function loadTrends() {
+  const el = document.getElementById("trend-list");
+  const risingEl = document.getElementById("stat-rising");
+  if (!el) return;
+
+  try {
+    const data = await get("/api/trends");
+
+    if (!data || !data.length) {
+      el.innerHTML = `<p style="color:#475569;font-size:13px;padding:8px 0">Trends appear after 2 weeks of data have been collected.</p>`;
+      if (risingEl) risingEl.textContent = "No data yet";
+      return;
+    }
+
+    const rising   = data.filter(d => d.direction === "rising");
+    const declining = data.filter(d => d.direction === "declining");
+
+    if (risingEl) risingEl.textContent = rising.length
+      ? rising.length + " rising"
+      : "0 rising";
+
+    // Show top 4 rising + top 3 declining
+    const rows = [
+      ...rising.slice(0, 4),
+      ...declining.slice(-3).reverse(),
+    ];
+
+    el.innerHTML = rows.map(d => {
+      const up = d.direction === "rising";
+      const pct = Math.abs(d.change_percent);
+      return `
+        <div class="trend-row">
+          <span>${cap(d.skill)}</span>
+          <span class="badge ${up ? "up" : "dn"}">${up ? "↑" : "↓"} ${pct}%</span>
+        </div>`;
+    }).join("");
+
+  } catch {
+    el.innerHTML = `<p style="color:#475569;font-size:13px;padding:8px 0">Could not load trends.</p>`;
+    if (risingEl) risingEl.textContent = "...";
   }
 }
 
@@ -407,7 +461,7 @@ function renderResults(gap, matches) {
 
 // Init
 async function init() {
-  await Promise.all([loadStats(), loadBars(), loadJobs()]);
+  await Promise.all([loadStats(), loadBars(), loadTrends(), loadJobs()]);
 }
 
 init();

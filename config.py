@@ -44,25 +44,28 @@ SOURCES = {
 
 #skills to track
 SKILLS = [
-    # Languages
+    # Languages — "r" removed (single letter causes false positives on every word)
     "python", "javascript", "typescript", "java", "c#", "c++", "go", "rust",
-    "ruby", "php", "swift", "kotlin", "scala", "r", "elixir", "clojure",
+    "ruby", "php", "swift", "kotlin", "scala", "elixir", "clojure", "bash",
     # Frontend
     "react", "vue", "angular", "next.js", "node.js", "svelte", "tailwind",
+    "html", "css", "webpack", "vite",
     # Backend
     "django", "flask", "fastapi", "spring", "rails", "laravel", "express",
-    "graphql", "rest", "grpc",
+    "graphql", "grpc", "rest api",
     # Data / ML / AI
     "machine learning", "deep learning", "tensorflow", "pytorch", "scikit-learn",
     "pandas", "numpy", "spark", "airflow", "dbt", "llm", "openai", "langchain",
+    "data engineering", "data science",
     # Databases
     "postgresql", "mysql", "mongodb", "sqlite", "redis", "elasticsearch",
-    "dynamodb", "cassandra", "snowflake", "bigquery",
+    "dynamodb", "cassandra", "snowflake", "bigquery", "supabase",
     # DevOps / Cloud / Infra
     "docker", "kubernetes", "aws", "azure", "gcp", "terraform", "ansible",
-    "ci/cd", "github actions", "jenkins", "linux", "git",
+    "github actions", "jenkins", "linux", "git", "ci/cd",
     # Other
-    "sql", "blockchain", "solidity", "cybersecurity", "embedded", "iot",
+    "sql", "cybersecurity", "blockchain", "solidity", "embedded", "iot",
+    "microservices", "api design", "system design",
 ]
 
 #scrap settings
