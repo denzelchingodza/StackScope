@@ -268,14 +268,9 @@ async function loadStats() {
 
   try {
     const salary = await get("/api/salary/stats");
-    const avg = salary?.avg_salary_min ?? salary?.avg ?? null;
-    if (avg) {
-      const el = document.getElementById("stat-salary");
-      if (el) el.textContent = "R" + Math.round(avg).toLocaleString();
-    } else {
-      const el = document.getElementById("stat-salary");
-      if (el) el.textContent = "No data yet";
-    }
+    const avg = salary?.mean ?? salary?.median ?? null;
+    const el = document.getElementById("stat-salary");
+    if (el) el.textContent = avg ? "R" + Math.round(avg).toLocaleString() : "No data yet";
   } catch {
     const el = document.getElementById("stat-salary");
     if (el) el.textContent = "No data yet";
