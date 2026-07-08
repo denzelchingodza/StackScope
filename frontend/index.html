@@ -9,29 +9,58 @@
   <style>
     html { scroll-behavior: smooth; }
 
-    .jobs-filter-row {
+    .jobs-toolbar {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-top: 16px;
     }
-    .filter-group {
+    .jobs-filters {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .filter-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #a3a3a3;
-    }
-    .lvl-filters {
-      display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
     }
+    .filter-select {
+      background: #0b1929;
+      border: 1px solid #1e3a52;
+      color: #94a3b8;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 7px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    .filter-select:focus { border-color: #38bdf8; color: #e2e8f0; }
+    .filter-select option { background: #0b1929; }
+    .jobs-count { font-size: 12px; color: #475569; white-space: nowrap; }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 18px 0 4px;
+    }
+    .page-btn {
+      background: #0b1929;
+      border: 1px solid #1e3a52;
+      color: #64748b;
+      font-size: 13px;
+      font-family: inherit;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) { border-color: #38bdf8; color: #e2e8f0; }
+    .page-btn:disabled { opacity: 0.25; cursor: default; }
+    .page-info { font-size: 12px; color: #475569; }
 
     /* ── LOADER ── */
     #loader {
@@ -214,7 +243,7 @@
   <!-- HERO -->
   <div class="hero">
     <div class="hero-text">
-      <p class="hero-eyebrow">Live data from 6 job boards &mdash; SA &amp; remote worldwide</p>
+      <p class="hero-eyebrow">Live data from 4 job boards, SA and remote worldwide</p>
       <h1>Know where the market is going before everyone else does.</h1>
       <p class="hero-sub">Track skill demand, salary data, and find where you stand across hundreds of live developer job postings.</p>
     </div>
@@ -398,34 +427,28 @@
     <div class="card table-card" id="jobs">
       <div class="table-header">
         <div class="card-label" style="margin:0">Latest jobs</div>
-        <div class="jobs-filter-row">
-          <div class="filter-group">
-            <span class="filter-label">Region</span>
-            <div class="lvl-filters">
-              <button class="lvl-btn active" onclick="filterRegion('all', this)">All</button>
-              <button class="lvl-btn" onclick="filterRegion('ZA', this)">🇿🇦 South Africa</button>
-              <button class="lvl-btn" onclick="filterRegion('REMOTE', this)">🌍 Remote</button>
-            </div>
+        <div class="jobs-toolbar">
+          <div class="jobs-filters">
+            <select class="filter-select" id="filter-region" onchange="onFilterChange()">
+              <option value="all">All regions</option>
+              <option value="ZA">South Africa</option>
+              <option value="REMOTE">Remote</option>
+            </select>
+            <select class="filter-select" id="filter-level" onchange="onFilterChange()">
+              <option value="all">All levels</option>
+              <option value="junior">Junior</option>
+              <option value="mid">Mid</option>
+              <option value="senior">Senior</option>
+            </select>
+            <select class="filter-select" id="filter-source" onchange="onFilterChange()">
+              <option value="all">All sources</option>
+              <option value="Adzuna SA">Adzuna SA</option>
+              <option value="Remotive">Remotive</option>
+              <option value="We Work Remotely">We Work Remotely</option>
+              <option value="Jobspresso">Jobspresso</option>
+            </select>
           </div>
-          <div class="filter-group">
-            <span class="filter-label">Level</span>
-            <div class="lvl-filters">
-              <button class="lvl-btn active" onclick="filterLevel('all', this)">All</button>
-              <button class="lvl-btn" onclick="filterLevel('junior', this)">Junior</button>
-              <button class="lvl-btn" onclick="filterLevel('mid', this)">Mid</button>
-              <button class="lvl-btn" onclick="filterLevel('senior', this)">Senior</button>
-            </div>
-          </div>
-          <div class="filter-group">
-            <span class="filter-label">Source</span>
-            <div class="lvl-filters" id="source-filters">
-              <button class="lvl-btn active" onclick="filterSource('all', this)">All</button>
-              <button class="lvl-btn" onclick="filterSource('Adzuna SA', this)">Adzuna SA</button>
-              <button class="lvl-btn" onclick="filterSource('Remotive', this)">Remotive</button>
-              <button class="lvl-btn" onclick="filterSource('We Work Remotely', this)">WWR</button>
-              <button class="lvl-btn" onclick="filterSource('Jobspresso', this)">Jobspresso</button>
-            </div>
-          </div>
+          <span class="jobs-count" id="jobs-count"></span>
         </div>
       </div>
       <div class="table-wrap">
@@ -441,49 +464,11 @@
             </tr>
           </thead>
           <tbody id="jobs-body">
-            <tr>
-              <td class="td-title">Python Backend Developer</td>
-              <td class="td-co">DataCore</td>
-              <td class="td-loc">Remote</td>
-              <td><div class="skill-tags"><span class="stag">Python</span><span class="stag">Django</span><span class="stag">PostgreSQL</span></div></td>
-              <td><span class="lvl mid">Mid</span></td>
-              <td><a class="src-link" href="https://za.indeed.com" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=indeed.com&sz=32" alt="Indeed" class="src-ico" /><span>Indeed</span></a></td>
-            </tr>
-            <tr>
-              <td class="td-title">Frontend Engineer</td>
-              <td class="td-co">FinTech ZA</td>
-              <td class="td-loc">Cape Town</td>
-              <td><div class="skill-tags"><span class="stag">React</span><span class="stag">TypeScript</span><span class="stag">Git</span></div></td>
-              <td><span class="lvl jun">Junior</span></td>
-              <td><a class="src-link" href="https://www.careers24.com" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=careers24.com&sz=32" alt="Careers24" class="src-ico" /><span>Careers24</span></a></td>
-            </tr>
-            <tr>
-              <td class="td-title">DevOps Engineer</td>
-              <td class="td-co">CloudSys</td>
-              <td class="td-loc">Johannesburg</td>
-              <td><div class="skill-tags"><span class="stag">Docker</span><span class="stag">AWS</span><span class="stag">Linux</span></div></td>
-              <td><span class="lvl sen">Senior</span></td>
-              <td><a class="src-link" href="https://www.pnet.co.za" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=pnet.co.za&sz=32" alt="PNet" class="src-ico" /><span>PNet</span></a></td>
-            </tr>
-            <tr>
-              <td class="td-title">Data Scientist</td>
-              <td class="td-co">InsightLab</td>
-              <td class="td-loc">Remote</td>
-              <td><div class="skill-tags"><span class="stag">Python</span><span class="stag">scikit-learn</span><span class="stag">SQL</span></div></td>
-              <td><span class="lvl mid">Mid</span></td>
-              <td><a class="src-link" href="https://za.indeed.com" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=indeed.com&sz=32" alt="Indeed" class="src-ico" /><span>Indeed</span></a></td>
-            </tr>
-            <tr>
-              <td class="td-title">Full Stack Developer</td>
-              <td class="td-co">BuildCo</td>
-              <td class="td-loc">Pretoria</td>
-              <td><div class="skill-tags"><span class="stag">Node.js</span><span class="stag">React</span><span class="stag">MongoDB</span></div></td>
-              <td><span class="lvl jun">Junior</span></td>
-              <td><a class="src-link" href="https://www.careers24.com" target="_blank" rel="noopener"><img src="https://www.google.com/s2/favicons?domain=careers24.com&sz=32" alt="Careers24" class="src-ico" /><span>Careers24</span></a></td>
-            </tr>
+            <tr><td colspan="6" style="text-align:center;padding:24px;color:#475569">Loading jobs...</td></tr>
           </tbody>
         </table>
       </div>
+      <div class="pagination" id="pagination"></div>
     </div>
 
   </main>

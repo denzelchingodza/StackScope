@@ -206,53 +206,74 @@ async function loadStats() {
 }
 
 // ── JOBS TABLE ───────────────────────────────────────────────────────
-let allJobs = [];
-let activeRegion = "all";
-let activeLevel  = "all";
-let activeSource = "all";
+let allJobs    = [];
+let currentPage = 1;
+const PAGE_SIZE = 20;
 
 async function loadJobs() {
   try {
     allJobs = await get("/api/jobs?limit=500");
+    currentPage = 1;
     renderJobTable();
   } catch {
-    // keep demo rows already in the HTML
+    // keep placeholder row
   }
 }
 
-function renderJobTable() {
-  const tbody = document.getElementById("jobs-body");
-  if (!tbody) return;
+function getFiltered() {
+  const region = document.getElementById("filter-region")?.value || "all";
+  const level  = document.getElementById("filter-level")?.value  || "all";
+  const source = document.getElementById("filter-source")?.value || "all";
 
-  const filtered = allJobs.filter(j => {
+  return allJobs.filter(j => {
     const country = (j.country || "").toUpperCase();
-    const level   = (j.experience_level || "").toLowerCase();
-    const source  = (j.source || "");
+    const lvl     = (j.experience_level || "").toLowerCase();
+    const src     = (j.source || "");
 
-    if (activeRegion !== "all" && country !== activeRegion) return false;
-    if (activeLevel  !== "all" && level   !== activeLevel)  return false;
-    if (activeSource !== "all" && source  !== activeSource) return false;
+    if (region !== "all" && country !== region) return false;
+    if (level  !== "all" && lvl    !== level)  return false;
+    if (source !== "all" && src    !== source) return false;
     return true;
   });
+}
+
+function onFilterChange() {
+  currentPage = 1;
+  renderJobTable();
+}
+
+function renderJobTable() {
+  const tbody     = document.getElementById("jobs-body");
+  const countEl   = document.getElementById("jobs-count");
+  const pagEl     = document.getElementById("pagination");
+  if (!tbody) return;
+
+  const filtered  = getFiltered();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start  = (currentPage - 1) * PAGE_SIZE;
+  const page   = filtered.slice(start, start + PAGE_SIZE);
+
+  if (countEl) countEl.textContent = filtered.length
+    ? `${filtered.length} job${filtered.length === 1 ? "" : "s"}`
+    : "";
 
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#a3a3a3">No jobs match these filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:28px;color:#475569">No jobs match these filters.</td></tr>`;
+    if (pagEl) pagEl.innerHTML = "";
     return;
   }
 
-  tbody.innerHTML = filtered.map(j => {
-    const flag = (j.country || "").toUpperCase() === "ZA" ? "🇿🇦" : "🌍";
+  tbody.innerHTML = page.map(j => {
+    const region = (j.country || "").toUpperCase() === "ZA" ? "South Africa" : "Remote";
     const skills = (j.skills || "").split(",").filter(s => s.trim()).slice(0, 3);
     return `
-      <tr data-country="${(j.country||"").toUpperCase()}" data-level="${j.experience_level||""}" data-source="${j.source||""}">
-        <td class="td-title"><a href="${j.url||"#"}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${j.title}</a></td>
+      <tr>
+        <td class="td-title"><a href="${j.url || "#"}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${j.title}</a></td>
         <td class="td-co">${j.company}</td>
-        <td class="td-loc">${flag} ${j.location}</td>
-        <td>
-          <div class="skill-tags">
-            ${skills.map(s => `<span class="stag">${s.trim()}</span>`).join("")}
-          </div>
-        </td>
+        <td class="td-loc">${region}</td>
+        <td><div class="skill-tags">${skills.map(s => `<span class="stag">${s.trim()}</span>`).join("")}</div></td>
         <td><span class="lvl ${lvlClass(j.experience_level)}">${cap(j.experience_level)}</span></td>
         <td>
           <a class="src-link" href="${srcUrl(j.source)}" target="_blank" rel="noopener">
@@ -262,34 +283,25 @@ function renderJobTable() {
         </td>
       </tr>`;
   }).join("");
+
+  // Pagination
+  if (pagEl) {
+    if (totalPages <= 1) {
+      pagEl.innerHTML = "";
+    } else {
+      pagEl.innerHTML = `
+        <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+        <span class="page-info">Page ${currentPage} of ${totalPages}</span>
+        <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? "disabled" : ""}>Next</button>
+      `;
+    }
+  }
 }
 
-function setActiveBtn(btn, groupClass) {
-  document.querySelectorAll(`.${groupClass} .lvl-btn`).forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-}
-
-function filterRegion(val, btn) {
-  activeRegion = val;
-  setActiveBtn(btn, btn.closest(".lvl-filters").className.split(" ")[0] || "lvl-filters");
-  // simpler: just toggle within parent
-  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
+function goPage(n) {
+  currentPage = n;
   renderJobTable();
-}
-
-function filterLevel(val, btn) {
-  activeLevel = val;
-  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderJobTable();
-}
-
-function filterSource(val, btn) {
-  activeSource = val;
-  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderJobTable();
+  document.getElementById("jobs")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function lvlClass(level) {
