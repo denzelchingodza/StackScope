@@ -6,9 +6,67 @@
   <title>StackScope</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>html { scroll-behavior: smooth; }</style>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #060e1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+    #loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loader-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+    }
+    .loader-bar-track {
+      width: 220px;
+      height: 3px;
+      background: #1e2d3d;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+    .loader-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+      border-radius: 99px;
+      animation: indeterminate 1.4s ease-in-out infinite;
+    }
+    @keyframes indeterminate {
+      0%   { width: 0%;   margin-left: 0%; }
+      50%  { width: 60%;  margin-left: 20%; }
+      100% { width: 0%;   margin-left: 100%; }
+    }
+    .loader-msg {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- LOADING SCREEN -->
+  <div id="loader">
+    <div class="loader-logo">StackScope</div>
+    <div class="loader-bar-track">
+      <div class="loader-bar-fill"></div>
+    </div>
+    <p class="loader-msg" id="loader-msg">Waking up the server...</p>
+  </div>
 
   <!-- NAV -->
   <nav>

@@ -2,6 +2,41 @@
 
 const API = "https://stackscope-m75j.onrender.com";
 
+// Wake up the Render backend before loading anything
+async function waitForBackend() {
+  const loader = document.getElementById("loader");
+  const msg = document.getElementById("loader-msg");
+  const maxWait = 60000;
+  const interval = 3000;
+  const start = Date.now();
+
+  while (Date.now() - start < maxWait) {
+    try {
+      const res = await fetch(`${API}/api/health`, { signal: AbortSignal.timeout(5000) });
+      if (res.ok) {
+        msg.textContent = "Ready.";
+        await new Promise(r => setTimeout(r, 400));
+        loader.classList.add("hidden");
+        setTimeout(() => loader.remove(), 600);
+        return;
+      }
+    } catch {
+      // still sleeping
+    }
+    const elapsed = Math.round((Date.now() - start) / 1000);
+    msg.textContent = `Starting up... (${elapsed}s)`;
+    await new Promise(r => setTimeout(r, interval));
+  }
+
+  // Timed out — hide loader anyway
+  msg.textContent = "Taking longer than usual...";
+  await new Promise(r => setTimeout(r, 1000));
+  loader.classList.add("hidden");
+  setTimeout(() => loader.remove(), 600);
+}
+
+waitForBackend();
+
 async function get(endpoint) {
   const res = await fetch(`${API}${endpoint}`, { signal: AbortSignal.timeout(60000) });
   if (!res.ok) throw new Error(`Failed: ${endpoint}`);

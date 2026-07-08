@@ -6,6 +6,9 @@ from database.db import save_job
 from scraper.pnet import PNetScraper
 from scraper.indeed import IndeedScraper
 from scraper.careers24 import Careers24Scraper
+from scraper.remotive import RemotiveScraper
+from scraper.weworkremotely import WeWorkRemotelyScraper
+from scraper.jobspresso import JobspressoScraper
 from config import SOURCES
 from api.app import app, API_HOST, API_PORT, DEBUG
 
@@ -19,6 +22,9 @@ SCRAPER_MAP = {
     "pnet": PNetScraper,
     "careers24": Careers24Scraper,
     "indeed": IndeedScraper,
+    "remotive": RemotiveScraper,
+    "weworkremotely": WeWorkRemotelyScraper,
+    "jobspresso": JobspressoScraper,
 }
 
 
