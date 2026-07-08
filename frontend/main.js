@@ -11,12 +11,10 @@ const LOADER_SKILLS = [
 ];
 
 const LOADER_SOURCES = [
+  { id: "lsrc-adzuna",     label: "Fetching Adzuna SA jobs..." },
   { id: "lsrc-remotive",   label: "Scanning Remotive..." },
   { id: "lsrc-wwr",        label: "Checking We Work Remotely..." },
   { id: "lsrc-jobspresso", label: "Loading Jobspresso..." },
-  { id: "lsrc-pnet",       label: "Fetching PNet..." },
-  { id: "lsrc-careers24",  label: "Fetching Careers24..." },
-  { id: "lsrc-indeed",     label: "Fetching Indeed SA..." },
 ];
 
 function spawnTag(container) {
@@ -207,35 +205,91 @@ async function loadStats() {
   }
 }
 
-// Jobs table
+// ── JOBS TABLE ───────────────────────────────────────────────────────
+let allJobs = [];
+let activeRegion = "all";
+let activeLevel  = "all";
+let activeSource = "all";
+
 async function loadJobs() {
   try {
-    const jobs = await get("/api/jobs?limit=50");
-    const tbody = document.getElementById("jobs-body");
-    if (!tbody || !jobs.length) return;
-    tbody.innerHTML = jobs.map(j => `
-      <tr>
-        <td class="td-title">${j.title}</td>
+    allJobs = await get("/api/jobs?limit=500");
+    renderJobTable();
+  } catch {
+    // keep demo rows already in the HTML
+  }
+}
+
+function renderJobTable() {
+  const tbody = document.getElementById("jobs-body");
+  if (!tbody) return;
+
+  const filtered = allJobs.filter(j => {
+    const country = (j.country || "").toUpperCase();
+    const level   = (j.experience_level || "").toLowerCase();
+    const source  = (j.source || "");
+
+    if (activeRegion !== "all" && country !== activeRegion) return false;
+    if (activeLevel  !== "all" && level   !== activeLevel)  return false;
+    if (activeSource !== "all" && source  !== activeSource) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#a3a3a3">No jobs match these filters.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(j => {
+    const flag = (j.country || "").toUpperCase() === "ZA" ? "🇿🇦" : "🌍";
+    const skills = (j.skills || "").split(",").filter(s => s.trim()).slice(0, 3);
+    return `
+      <tr data-country="${(j.country||"").toUpperCase()}" data-level="${j.experience_level||""}" data-source="${j.source||""}">
+        <td class="td-title"><a href="${j.url||"#"}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">${j.title}</a></td>
         <td class="td-co">${j.company}</td>
-        <td class="td-loc">${j.location}</td>
+        <td class="td-loc">${flag} ${j.location}</td>
         <td>
           <div class="skill-tags">
-            ${(j.skills || "").split(",").slice(0, 3).map(s =>
-              `<span class="stag">${s.trim()}</span>`
-            ).join("")}
+            ${skills.map(s => `<span class="stag">${s.trim()}</span>`).join("")}
           </div>
         </td>
         <td><span class="lvl ${lvlClass(j.experience_level)}">${cap(j.experience_level)}</span></td>
         <td>
-          <a class="src-link" href="${j.url || srcUrl(j.source)}" target="_blank" rel="noopener">
+          <a class="src-link" href="${srcUrl(j.source)}" target="_blank" rel="noopener">
             <img class="src-ico" src="https://www.google.com/s2/favicons?domain=${srcDomain(j.source)}&sz=32" alt="${j.source}" />
             <span>${j.source}</span>
           </a>
         </td>
-      </tr>`).join("");
-  } catch {
-    // keep demo rows already in the HTML
-  }
+      </tr>`;
+  }).join("");
+}
+
+function setActiveBtn(btn, groupClass) {
+  document.querySelectorAll(`.${groupClass} .lvl-btn`).forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function filterRegion(val, btn) {
+  activeRegion = val;
+  setActiveBtn(btn, btn.closest(".lvl-filters").className.split(" ")[0] || "lvl-filters");
+  // simpler: just toggle within parent
+  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderJobTable();
+}
+
+function filterLevel(val, btn) {
+  activeLevel = val;
+  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderJobTable();
+}
+
+function filterSource(val, btn) {
+  activeSource = val;
+  btn.closest(".lvl-filters").querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderJobTable();
 }
 
 function lvlClass(level) {
@@ -251,12 +305,28 @@ function cap(str) {
 }
 
 function srcDomain(source) {
-  const map = { "Indeed": "indeed.com", "PNet": "pnet.co.za", "Careers24": "careers24.com" };
-  return map[source] || "indeed.com";
+  const map = {
+    "Adzuna SA":        "adzuna.com",
+    "Remotive":         "remotive.com",
+    "We Work Remotely": "weworkremotely.com",
+    "Jobspresso":       "jobspresso.co",
+    "Indeed SA":        "indeed.com",
+    "PNet":             "pnet.co.za",
+    "Careers24":        "careers24.com",
+  };
+  return map[source] || "google.com";
 }
 
 function srcUrl(source) {
-  const map = { "Indeed": "https://za.indeed.com", "PNet": "https://www.pnet.co.za", "Careers24": "https://www.careers24.com" };
+  const map = {
+    "Adzuna SA":        "https://www.adzuna.co.za",
+    "Remotive":         "https://remotive.com",
+    "We Work Remotely": "https://weworkremotely.com",
+    "Jobspresso":       "https://jobspresso.co",
+    "Indeed SA":        "https://za.indeed.com",
+    "PNet":             "https://www.pnet.co.za",
+    "Careers24":        "https://www.careers24.com",
+  };
   return map[source] || "#";
 }
 
@@ -321,23 +391,6 @@ function renderResults(gap, matches) {
   const box = document.getElementById("result-box");
   box.style.display = "block";
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-// Level filter
-function filterLevel(level, btn) {
-  document.querySelectorAll(".lvl-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-
-  const rows = document.querySelectorAll("#jobs-body tr");
-  rows.forEach(row => {
-    if (level === "all") {
-      row.style.display = "";
-    } else {
-      const badge = row.querySelector(".lvl");
-      const rowLevel = badge ? badge.textContent.trim().toLowerCase() : "";
-      row.style.display = rowLevel === level ? "" : "none";
-    }
-  });
 }
 
 // Init

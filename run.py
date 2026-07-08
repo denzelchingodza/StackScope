@@ -3,9 +3,7 @@
 import logging
 from database.models import create_tables
 from database.db import save_job
-from scraper.pnet import PNetScraper
-from scraper.indeed import IndeedScraper
-from scraper.careers24 import Careers24Scraper
+from scraper.adzuna import AdzunaScraper
 from scraper.remotive import RemotiveScraper
 from scraper.weworkremotely import WeWorkRemotelyScraper
 from scraper.jobspresso import JobspressoScraper
@@ -19,9 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 SCRAPER_MAP = {
-    "pnet": PNetScraper,
-    "careers24": Careers24Scraper,
-    "indeed": IndeedScraper,
+    "adzuna": AdzunaScraper,
     "remotive": RemotiveScraper,
     "weworkremotely": WeWorkRemotelyScraper,
     "jobspresso": JobspressoScraper,

@@ -12,22 +12,12 @@ DATABASE_PATH = os.environ.get("DATABASE_PATH", "database/stackscope.db")
 
 #scraper sources
 SOURCES = {
-    # South Africa
-    "pnet": {
-        "name": "PNet",
-        "url": "https://www.pnet.co.za/jobs/it",
-        "country": "ZA",
-        "enabled": True,
-    },
-    "careers24": {
-        "name": "Careers24",
-        "url": "https://www.careers24.com/jobs/it",
-        "country": "ZA",
-        "enabled": True,
-    },
-    "indeed": {
-        "name": "Indeed SA",
-        "url": "https://za.indeed.com/jobs?q=software+developer",
+    # South Africa — via Adzuna API (free, no blocking)
+    # Sign up: https://developer.adzuna.com
+    # Set ADZUNA_APP_ID and ADZUNA_APP_KEY in your environment
+    "adzuna": {
+        "name": "Adzuna SA",
+        "url": "https://api.adzuna.com/v1/api/jobs/za/search",
         "country": "ZA",
         "enabled": True,
     },

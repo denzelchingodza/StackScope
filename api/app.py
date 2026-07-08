@@ -137,21 +137,17 @@ def trigger_scrape():
     """Manually trigger a scrape. Hit this from a free cron service daily."""
     import threading
     from database.db import save_job
+    from scraper.adzuna import AdzunaScraper
     from scraper.remotive import RemotiveScraper
     from scraper.weworkremotely import WeWorkRemotelyScraper
     from scraper.jobspresso import JobspressoScraper
-    from scraper.pnet import PNetScraper
-    from scraper.careers24 import Careers24Scraper
-    from scraper.indeed import IndeedScraper
     from config import SOURCES
 
     SCRAPER_MAP = {
+        "adzuna": AdzunaScraper,
         "remotive": RemotiveScraper,
         "weworkremotely": WeWorkRemotelyScraper,
         "jobspresso": JobspressoScraper,
-        "pnet": PNetScraper,
-        "careers24": Careers24Scraper,
-        "indeed": IndeedScraper,
     }
 
     def scrape():

@@ -38,21 +38,17 @@ def run_scrapers_background():
     """Run all scrapers in a background thread after startup."""
     logger.info("Background scrape starting...")
     try:
+        from scraper.adzuna import AdzunaScraper
         from scraper.remotive import RemotiveScraper
         from scraper.weworkremotely import WeWorkRemotelyScraper
         from scraper.jobspresso import JobspressoScraper
-        from scraper.pnet import PNetScraper
-        from scraper.careers24 import Careers24Scraper
-        from scraper.indeed import IndeedScraper
         from config import SOURCES
 
         SCRAPER_MAP = {
+            "adzuna": AdzunaScraper,
             "remotive": RemotiveScraper,
             "weworkremotely": WeWorkRemotelyScraper,
             "jobspresso": JobspressoScraper,
-            "pnet": PNetScraper,
-            "careers24": Careers24Scraper,
-            "indeed": IndeedScraper,
         }
 
         total_saved = 0

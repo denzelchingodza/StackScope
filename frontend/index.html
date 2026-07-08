@@ -9,6 +9,30 @@
   <style>
     html { scroll-behavior: smooth; }
 
+    .jobs-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #a3a3a3;
+    }
+    .lvl-filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
     /* ── LOADER ── */
     #loader {
       position: fixed;
@@ -168,12 +192,10 @@
         <div class="loader-bar-track"><div class="loader-bar-fill"></div></div>
       </div>
       <div class="loader-sources">
+        <span class="lsrc" id="lsrc-adzuna">Adzuna SA</span>
         <span class="lsrc" id="lsrc-remotive">Remotive</span>
         <span class="lsrc" id="lsrc-wwr">We Work Remotely</span>
         <span class="lsrc" id="lsrc-jobspresso">Jobspresso</span>
-        <span class="lsrc" id="lsrc-pnet">PNet</span>
-        <span class="lsrc" id="lsrc-careers24">Careers24</span>
-        <span class="lsrc" id="lsrc-indeed">Indeed SA</span>
       </div>
     </div>
   </div>
@@ -376,11 +398,34 @@
     <div class="card table-card" id="jobs">
       <div class="table-header">
         <div class="card-label" style="margin:0">Latest jobs</div>
-        <div class="level-filters">
-          <button class="lvl-btn active" onclick="filterLevel('all', this)">All</button>
-          <button class="lvl-btn" onclick="filterLevel('junior', this)">Junior</button>
-          <button class="lvl-btn" onclick="filterLevel('mid', this)">Mid</button>
-          <button class="lvl-btn" onclick="filterLevel('senior', this)">Senior</button>
+        <div class="jobs-filter-row">
+          <div class="filter-group">
+            <span class="filter-label">Region</span>
+            <div class="lvl-filters">
+              <button class="lvl-btn active" onclick="filterRegion('all', this)">All</button>
+              <button class="lvl-btn" onclick="filterRegion('ZA', this)">🇿🇦 South Africa</button>
+              <button class="lvl-btn" onclick="filterRegion('REMOTE', this)">🌍 Remote</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Level</span>
+            <div class="lvl-filters">
+              <button class="lvl-btn active" onclick="filterLevel('all', this)">All</button>
+              <button class="lvl-btn" onclick="filterLevel('junior', this)">Junior</button>
+              <button class="lvl-btn" onclick="filterLevel('mid', this)">Mid</button>
+              <button class="lvl-btn" onclick="filterLevel('senior', this)">Senior</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Source</span>
+            <div class="lvl-filters" id="source-filters">
+              <button class="lvl-btn active" onclick="filterSource('all', this)">All</button>
+              <button class="lvl-btn" onclick="filterSource('Adzuna SA', this)">Adzuna SA</button>
+              <button class="lvl-btn" onclick="filterSource('Remotive', this)">Remotive</button>
+              <button class="lvl-btn" onclick="filterSource('We Work Remotely', this)">WWR</button>
+              <button class="lvl-btn" onclick="filterSource('Jobspresso', this)">Jobspresso</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="table-wrap">
@@ -460,13 +505,11 @@
 
       <div class="footer-col">
         <div class="footer-col-title">Data sources</div>
-        <a href="https://za.indeed.com" target="_blank" rel="noopener" class="footer-link">Indeed South Africa</a>
-        <a href="https://www.pnet.co.za" target="_blank" rel="noopener" class="footer-link">PNet</a>
-        <a href="https://www.careers24.com" target="_blank" rel="noopener" class="footer-link">Careers24</a>
+        <a href="https://www.adzuna.co.za" target="_blank" rel="noopener" class="footer-link">Adzuna South Africa</a>
         <a href="https://remotive.com" target="_blank" rel="noopener" class="footer-link">Remotive</a>
         <a href="https://weworkremotely.com" target="_blank" rel="noopener" class="footer-link">We Work Remotely</a>
         <a href="https://jobspresso.co" target="_blank" rel="noopener" class="footer-link">Jobspresso</a>
-        <p class="footer-note">Data is scraped from public job listings and processed automatically. StackScope is not affiliated with any of these platforms.</p>
+        <p class="footer-note">Data is sourced via public APIs and RSS feeds and processed automatically. StackScope is not affiliated with any of these platforms.</p>
       </div>
 
       <div class="footer-col">
