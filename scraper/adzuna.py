@@ -89,11 +89,14 @@ class AdzunaScraper(BaseScraper):
             location = data.get("location", {}).get("display_name", "South Africa")
             description = data.get("description", "") or ""
             url = data.get("redirect_url", "") or ""
-            salary_min = data.get("salary_min")
-            salary_max = data.get("salary_max")
+            # Adzuna returns annual ZAR figures — convert to monthly
+            salary_min_raw = data.get("salary_min")
+            salary_max_raw = data.get("salary_max")
+            salary_min = round(salary_min_raw / 12, 2) if salary_min_raw else None
+            salary_max = round(salary_max_raw / 12, 2) if salary_max_raw else None
             salary_raw = None
             if salary_min:
-                salary_raw = f"R{int(salary_min):,} - R{int(salary_max):,}" if salary_max else f"R{int(salary_min):,}+"
+                salary_raw = f"R{int(salary_min):,}/mo" + (f" - R{int(salary_max):,}/mo" if salary_max else "")
 
             created = data.get("created", datetime.now().isoformat())
 

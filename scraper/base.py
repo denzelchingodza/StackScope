@@ -72,23 +72,34 @@ class BaseScraper(ABC):
         return "unspecified"
 
     def parse_salary(self, salary_str: str) -> tuple[float | None, float | None]:
-        import re
         if not salary_str:
             return None, None
 
-        numbers = re.findall(r"[\d\s,]+", salary_str.replace(" ", ""))
-        cleaned = []
-        for n in numbers:
-            n = n.replace(",", "").strip()
-            if n.isdigit():
-                cleaned.append(float(n))
+        text = salary_str.lower()
+        is_hourly = any(w in text for w in ["hour", "/hr", "per hr"])
+        is_annual = any(w in text for w in ["year", "annual", "annum", "pa", "/yr", "per year"])
 
-        if len(cleaned) >= 2:
-            return min(cleaned), max(cleaned)
-        if len(cleaned) == 1:
-            return cleaned[0], None
+        # Strip k-notation and commas, extract numbers
+        normalized = re.sub(r'(\d+)k', lambda m: str(int(m.group(1)) * 1000), text)
+        numbers = re.findall(r'\d[\d,]*', normalized)
+        cleaned = [float(n.replace(",", "")) for n in numbers if float(n.replace(",", "")) > 100]
 
-        return None, None
+        if not cleaned:
+            return None, None
+
+        lo = min(cleaned)
+        hi = max(cleaned) if len(cleaned) > 1 else None
+
+        if is_hourly:
+            # Hourly → monthly (160 hrs/month)
+            lo = lo * 160
+            hi = hi * 160 if hi else None
+        elif is_annual or lo > 5000:
+            # Annual → monthly. Treat anything over 5000 as annual (bare number heuristic)
+            lo = round(lo / 12, 2)
+            hi = round(hi / 12, 2) if hi else None
+
+        return round(lo, 2), round(hi, 2) if hi else None
 
     @abstractmethod
     def scrape(self) -> list[dict]:
