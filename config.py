@@ -40,6 +40,12 @@ SOURCES = {
         "country": "REMOTE",
         "enabled": True,
     },
+    "jobleads": {
+        "name": "JobLeads",
+        "url": "https://www.jobleads.com/us/jobs",
+        "country": "US",
+        "enabled": True,
+    },
 }
 
 #skills to track

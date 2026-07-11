@@ -7,6 +7,7 @@ from scraper.adzuna import AdzunaScraper
 from scraper.remotive import RemotiveScraper
 from scraper.weworkremotely import WeWorkRemotelyScraper
 from scraper.jobspresso import JobspressoScraper
+from scraper.jobleads import JobLeadsScraper
 from config import SOURCES
 from api.app import app, API_HOST, API_PORT, DEBUG
 
@@ -21,6 +22,7 @@ SCRAPER_MAP = {
     "remotive": RemotiveScraper,
     "weworkremotely": WeWorkRemotelyScraper,
     "jobspresso": JobspressoScraper,
+    "jobleads": JobLeadsScraper,
 }
 
 
