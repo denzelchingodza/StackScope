@@ -210,7 +210,7 @@ async function loadStats() {
     const salary = await get("/api/salary/stats");
     const avg = salary?.mean ?? salary?.median ?? null;
     const el = document.getElementById("stat-salary");
-    if (el) el.textContent = avg ? "R" + Math.round(avg).toLocaleString() : "No data yet";
+    if (el) el.textContent = avg ? "$" + Math.round(avg).toLocaleString() + " / mo avg" : "No data yet";
   } catch {
     const el = document.getElementById("stat-salary");
     if (el) el.textContent = "No data yet";
@@ -322,7 +322,8 @@ function renderJobTable() {
   }
 
   tbody.innerHTML = page.map(j => {
-    const region = (j.country || "").toUpperCase() === "ZA" ? "South Africa" : "Remote";
+    const c = (j.country || "").toUpperCase();
+    const region = c === "ZA" ? "South Africa" : c === "US" ? "United States" : "Remote";
     const skills = (j.skills || "").split(",").filter(s => s.trim()).slice(0, 3);
     return `
       <tr>
@@ -381,6 +382,7 @@ function srcDomain(source) {
     "Indeed SA":        "indeed.com",
     "PNet":             "pnet.co.za",
     "Careers24":        "careers24.com",
+    "JobLeads":         "jobleads.com",
   };
   return map[source] || "google.com";
 }
@@ -394,6 +396,7 @@ function srcUrl(source) {
     "Indeed SA":        "https://za.indeed.com",
     "PNet":             "https://www.pnet.co.za",
     "Careers24":        "https://www.careers24.com",
+    "JobLeads":         "https://www.jobleads.com",
   };
   return map[source] || "#";
 }
