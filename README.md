@@ -1,6 +1,6 @@
 # StackScope
 
-Job market intelligence for developers. See which skills are in demand, what salaries look like, and how your stack compares to what employers actually want.
+Job market intelligence for South African developers. Scrapes live job postings, extracts in-demand skills, tracks what's trending, and scores your stack against the current market.
 
 ![Stack](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white)
@@ -11,14 +11,20 @@ Job market intelligence for developers. See which skills are in demand, what sal
 
 ## What it does
 
-StackScope scrapes live developer job postings from Adzuna, Remotive, We Work Remotely, and Jobspresso. It runs NLP and machine learning on the data to answer real questions about the job market.
+Scrapes developer job postings from Adzuna, Remotive, We Work Remotely, and Jobspresso and builds a structured picture of the market:
 
-- Match your skills against live job demand and see where you stand
-- Explore salary ranges by skill set and experience level
-- Track which technologies are rising or declining week over week
-- See which skills appear together most often in job postings
+- What skills appear most frequently in job listings right now
+- Which skills are trending up or down over time
+- How your stack compares to what employers are asking for, scored using TF-IDF and cosine similarity
+- Salary range estimates based on scraped posting data
 
-The core pipeline uses TF-IDF and cosine similarity built with spaCy and scikit-learn. Data lives in PostgreSQL on Supabase. A Flask API serves everything to a frontend built in plain HTML, CSS, and JavaScript.
+The scoring system represents both job postings and a user's skill set as TF-IDF vectors, then computes cosine similarity to rank how well a profile matches the market. Skill extraction is done through keyword matching and frequency analysis across the scraped corpus.
+
+---
+
+## What it is
+
+StackScope is a data pipeline and scoring tool. The core work is the scraping infrastructure, data cleaning, structured extraction, and ranking algorithm — not a machine learning model. It is accurately described as a job market intelligence tool with a keyword-based scoring engine.
 
 ---
 
@@ -76,4 +82,4 @@ Every one of those problems had a real solution. Finding them moved me further t
 
 ---
 
-
+Built by [Denzel Chingodza](https://denz-platform.vercel.app)
