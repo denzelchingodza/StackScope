@@ -148,6 +148,7 @@ def trigger_scrape():
     from scraper.remotive import RemotiveScraper
     from scraper.weworkremotely import WeWorkRemotelyScraper
     from scraper.jobspresso import JobspressoScraper
+    from scraper.jobleads import JobLeadsScraper
     from config import SOURCES
 
     SCRAPER_MAP = {
@@ -155,6 +156,7 @@ def trigger_scrape():
         "remotive": RemotiveScraper,
         "weworkremotely": WeWorkRemotelyScraper,
         "jobspresso": JobspressoScraper,
+        "jobleads": JobLeadsScraper,
     }
 
     def scrape():

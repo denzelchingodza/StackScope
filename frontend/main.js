@@ -208,9 +208,19 @@ async function loadStats() {
 
   try {
     const salary = await get("/api/salary/stats");
-    const avg = salary?.mean ?? salary?.median ?? null;
     const el = document.getElementById("stat-salary");
-    if (el) el.textContent = avg ? "$" + Math.round(avg).toLocaleString() + " / mo avg" : "No data yet";
+    if (!el) return;
+    const byCurrency = salary?.by_currency || {};
+    const order = ["USD", "ZAR", "GBP", "EUR"];
+    const lines = order
+      .filter(c => byCurrency[c])
+      .map(c => {
+        const { symbol, mean } = byCurrency[c];
+        return `${symbol}${Math.round(mean).toLocaleString()} ${c}`;
+      });
+    el.innerHTML = lines.length
+      ? lines.map(l => `<span style="display:block;font-size:13px;line-height:1.6">${l}<span style="color:#64748b;font-size:11px"> /mo</span></span>`).join("")
+      : "No data yet";
   } catch {
     const el = document.getElementById("stat-salary");
     if (el) el.textContent = "No data yet";

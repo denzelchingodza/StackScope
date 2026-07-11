@@ -50,26 +50,60 @@ def normalise_salary(salary_raw: str, period: str = "monthly") -> tuple[float | 
     return round(salary_min, 2), round(salary_max, 2) if salary_max else None
 
 
+def detect_currency(salary_raw: str) -> str:
+    if not salary_raw:
+        return "UNKNOWN"
+    t = salary_raw.upper()
+    if "USD" in t or "$" in t:
+        return "USD"
+    if "GBP" in t or "£" in t:
+        return "GBP"
+    if "EUR" in t or "€" in t:
+        return "EUR"
+    if "ZAR" in t or re.match(r"^R[\s\d]", salary_raw):
+        return "ZAR"
+    return "OTHER"
+
+
 def get_salary_stats() -> dict:
     jobs = get_all_jobs()
 
-    salaries = []
-    for job in jobs:
-        if job["salary_min"]:
-            salaries.append(job["salary_min"])
+    by_currency: dict[str, list[float]] = {}
+    all_salaries = []
 
-    if not salaries:
+    for job in jobs:
+        if not job["salary_min"]:
+            continue
+        currency = detect_currency(job.get("salary_raw") or "")
+        by_currency.setdefault(currency, []).append(job["salary_min"])
+        all_salaries.append(job["salary_min"])
+
+    if not all_salaries:
         logger.warning("No salary data available yet.")
         return {}
 
-    salaries = np.array(salaries)
+    arr = np.array(all_salaries)
+
+    symbols = {"USD": "$", "GBP": "£", "EUR": "€", "ZAR": "R", "OTHER": ""}
+    currency_stats = {}
+    for currency, vals in by_currency.items():
+        if currency == "UNKNOWN":
+            continue
+        a = np.array(vals)
+        currency_stats[currency] = {
+            "symbol": symbols.get(currency, ""),
+            "mean": round(float(np.mean(a)), 2),
+            "median": round(float(np.median(a)), 2),
+            "count": len(vals),
+        }
 
     return {
-        "count": len(salaries),
-        "mean": round(float(np.mean(salaries)), 2),
-        "median": round(float(np.median(salaries)), 2),
-        "min": round(float(np.min(salaries)), 2),
-        "max": round(float(np.max(salaries)), 2),
+        "count": len(all_salaries),
+        "mean": round(float(np.mean(arr)), 2),
+        "median": round(float(np.median(arr)), 2),
+        "min": round(float(np.min(arr)), 2),
+        "max": round(float(np.max(arr)), 2),
+        "by_currency": currency_stats,
         "by_experience": get_salary_by_experience(),
     }
 
