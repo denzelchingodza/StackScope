@@ -9,7 +9,7 @@ Job market intelligence for South African developers. Scrapes live job postings,
 
 ---
 
-## What it does
+## What it does!
 
 Scrapes developer job postings from Adzuna, Remotive, We Work Remotely, and Jobspresso and builds a structured picture of the market:
 
