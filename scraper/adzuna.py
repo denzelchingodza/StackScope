@@ -85,7 +85,7 @@ class AdzunaScraper(BaseScraper):
             if not title:
                 return None
 
-            company = data.get("company", {}).get("display_name", "Unknown")
+            company = data.get("company", {}).get("display_name", "") or "Confidential"
             location = data.get("location", {}).get("display_name", "South Africa")
             description = data.get("description", "") or ""
             url = data.get("redirect_url", "") or ""
