@@ -82,4 +82,50 @@ Every one of those problems had a real solution. Finding them moved me further t
 
 ---
 
+## What broke and how I fixed it
+
+**Skill "r" matching inside every word**
+
+The first version of skill extraction used `skill in text.lower()`. The skill `"r"` matched inside "developer", "engineer", "senior" — every posting was flagged as requiring R. Fixed by pre-compiling one regex per skill using word boundaries:
+
+```python
+re.compile(r'\b' + re.escape(skill) + r'\b', re.IGNORECASE)
+```
+
+`re.escape` also handles skills with special characters like `c#`, `c++`, and `next.js` that would otherwise break the regex pattern.
+
+**Database wiped on every cold start**
+
+The original build used SQLite with the database file stored on Render's local filesystem. Render's free tier uses ephemeral storage — the filesystem resets on every deploy or cold start, taking all scraped data with it. Migrated to PostgreSQL on Supabase. Also added `ON CONFLICT (url) DO NOTHING` to the insert query so re-scraping the same job posting doesn't create duplicates.
+
+**Salary fields in every format imaginable**
+
+Scraped salary strings looked like `"$150k/year"`, `"£45,000 per annum"`, `"R25,000/month"`, `"$50/hr"`, and sometimes just `"competitive"`. Built a normaliser that detects k-notation, annual/monthly/hourly flags, and strips commas before extracting numbers. Any bare number above 5,000 is assumed annual and divided by 12. Hourly rates are multiplied by 160 (standard working hours per month).
+
+**One failing scraper killing the whole pipeline**
+
+If Remotive returned a 429 or We Work Remotely changed its HTML structure, an unhandled exception would crash the entire scrape run. Wrapped each scraper call in its own try/except block so a single failure is logged and skipped without stopping the rest of the queue.
+
+**API blocked during scraping**
+
+Running all four scrapers sequentially at startup blocked the Flask server for 15–30 seconds — the API returned nothing until scraping finished. Fixed by moving scraping into a background thread:
+
+```python
+thread = threading.Thread(target=run_scrapers_background, daemon=True)
+thread.start()
+```
+
+The API starts immediately and serves seed data while real data loads in the background. `daemon=True` ensures the thread dies automatically if the main process exits.
+
+---
+
+## Technical notes
+
+- **Dual database backend** — `db.py` checks for a `DATABASE_URL` environment variable. If present it uses `psycopg2` (PostgreSQL). If not, it falls back to `sqlite3` for local development. Same query interface, different driver.
+- **Skill extraction** — all skill patterns are pre-compiled at import time into `_SKILL_PATTERNS`. Recompiling on every call would add significant overhead when processing hundreds of job descriptions.
+- **TF-IDF scoring** — `TfidfVectorizer` is fit on the full corpus of job skill strings plus the user's skill string as the final document. The user vector is extracted as `tfidf_matrix[-1]` and compared against all job vectors using cosine similarity.
+- **Salary currency detection** — checked by scanning for currency symbols and codes (`$`, `USD`, `£`, `GBP`, `R`, `ZAR`) before normalising to avoid mixing rand and dollar figures in the same stat.
+
+---
+
 Built by [Denzel Chingodza](https://denz-platform.vercel.app)
