@@ -86,7 +86,7 @@ Every one of those problems had a real solution. Finding them moved me further t
 
 **Skill "r" matching inside every word**
 
-The first version of skill extraction used `skill in text.lower()`. The skill `"r"` matched inside "developer", "engineer", "senior" — every posting was flagged as requiring R. Fixed by pre-compiling one regex per skill using word boundaries:
+The first version of skill extraction used `skill in text.lower()`. The skill `"r"` matched inside "developer", "engineer", "senior" every posting was flagged as requiring R. Fixed by pre-compiling one regex per skill using word boundaries:
 
 ```python
 re.compile(r'\b' + re.escape(skill) + r'\b', re.IGNORECASE)
@@ -96,7 +96,7 @@ re.compile(r'\b' + re.escape(skill) + r'\b', re.IGNORECASE)
 
 **Database wiped on every cold start**
 
-The original build used SQLite with the database file stored on Render's local filesystem. Render's free tier uses ephemeral storage — the filesystem resets on every deploy or cold start, taking all scraped data with it. Migrated to PostgreSQL on Supabase. Also added `ON CONFLICT (url) DO NOTHING` to the insert query so re-scraping the same job posting doesn't create duplicates.
+The original build used SQLite with the database file stored on Render's local filesystem. Render's free tier uses ephemeral storage the filesystem resets on every deploy or cold start, taking all scraped data with it. Migrated to PostgreSQL on Supabase. Also added `ON CONFLICT (url) DO NOTHING` to the insert query so re-scraping the same job posting doesn't create duplicates.
 
 **Salary fields in every format imaginable**
 
@@ -108,7 +108,7 @@ If Remotive returned a 429 or We Work Remotely changed its HTML structure, an un
 
 **API blocked during scraping**
 
-Running all four scrapers sequentially at startup blocked the Flask server for 15–30 seconds — the API returned nothing until scraping finished. Fixed by moving scraping into a background thread:
+Running all four scrapers sequentially at startup blocked the Flask server for 15–30 seconds the API returned nothing until scraping finished. Fixed by moving scraping into a background thread:
 
 ```python
 thread = threading.Thread(target=run_scrapers_background, daemon=True)
@@ -122,7 +122,7 @@ The API starts immediately and serves seed data while real data loads in the bac
 ## Technical notes
 
 - **Dual database backend** — `db.py` checks for a `DATABASE_URL` environment variable. If present it uses `psycopg2` (PostgreSQL). If not, it falls back to `sqlite3` for local development. Same query interface, different driver.
-- **Skill extraction** — all skill patterns are pre-compiled at import time into `_SKILL_PATTERNS`. Recompiling on every call would add significant overhead when processing hundreds of job descriptions.
+- **Skill extraction** — all skill patterns are pre compiled at import time into `_SKILL_PATTERNS`. Recompiling on every call would add significant overhead when processing hundreds of job descriptions.
 - **TF-IDF scoring** — `TfidfVectorizer` is fit on the full corpus of job skill strings plus the user's skill string as the final document. The user vector is extracted as `tfidf_matrix[-1]` and compared against all job vectors using cosine similarity.
 - **Salary currency detection** — checked by scanning for currency symbols and codes (`$`, `USD`, `£`, `GBP`, `R`, `ZAR`) before normalising to avoid mixing rand and dollar figures in the same stat.
 
