@@ -115,7 +115,8 @@ thread = threading.Thread(target=run_scrapers_background, daemon=True)
 thread.start()
 ```
 
-The API starts immediately and serves seed data while real data loads in the background. `daemon=True` ensures the thread dies automatically if the main process exits.
+The API starts immediately and serves seed data while real data loads in the background. `daemon=True` ensures the thread dies automatically if the main process exists.
+
 
 ---
 
