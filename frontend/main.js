@@ -434,7 +434,7 @@ async function analyse() {
       []
     );
   } finally {
-    if (btn) { btn.textContent = "See my results"; btn.disabled = false; }
+    if (btn) { btn.textContent = "Check my score"; btn.disabled = false; }
   }
 }
 
@@ -448,6 +448,8 @@ function summaryText(score) {
 function renderResults(gap, matches) {
   document.getElementById("score-big").textContent  = gap.score + "%";
   document.getElementById("score-desc").textContent = gap.summary || summaryText(gap.score);
+  const ring = document.getElementById("score-ring-fill");
+  if (ring) ring.style.strokeDashoffset = Math.round(201 * (1 - gap.score / 100));
 
   document.getElementById("have-chips").innerHTML =
     (gap.have || []).length
