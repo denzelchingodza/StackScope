@@ -52,10 +52,32 @@ nav {
 .hero {
   background: #0369a1;
   padding: 44px 36px 52px;
+  display: flex;
+  align-items: flex-end;
   max-width: 100%;
+  overflow: hidden;
 }
 
-.hero-text { max-width: 520px; }
+.hero-text { flex: 1; max-width: 480px; }
+
+.hero-art {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.hero-art-right { margin-left: auto; }
+
+.dev-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 14px;
+  padding: 18px 20px 10px;
+  display: inline-flex;
+  align-items: flex-end;
+}
 
 .hero-eyebrow {
   font-size: 11px;
