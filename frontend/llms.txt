@@ -1,0 +1,25 @@
+# StackScope
+
+StackScope is a job market intelligence tool for South African developers.
+
+## What it does
+
+Scrapes live job postings across South Africa, extracts skill frequency across the corpus, tracks what is trending, and scores a developer's skill stack against the current market using TF-IDF vectorization and cosine similarity.
+
+## Who it is for
+
+CS students and developers in South Africa figuring out what skills to learn and which roles to target.
+
+## Stack
+
+- Backend: Python, Flask, PostgreSQL (Supabase), scikit-learn
+- Frontend: Vanilla HTML/CSS/JS, Chart.js
+- Deployment: Vercel (frontend), Render (API)
+
+## Live
+
+https://stack-scope-eight.vercel.app
+
+## Author
+
+Denzel Chingodza — denzel.chingodza@icloud.com
