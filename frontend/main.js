@@ -476,8 +476,18 @@ function renderResults(gap, matches) {
       : `<p style="font-size:13px;color:#94a3b8;padding:4px 0">No matching jobs found for these filters. Try broadening your level or region.</p>`;
 
   const box = document.getElementById("result-box");
+  const placeholder = document.getElementById("match-placeholder");
   box.style.display = "block";
+  if (placeholder) placeholder.style.display = "none";
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+// ── VIEW SWITCHER ────────────────────────────────────────────────────
+function switchView(name, btn) {
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+  document.getElementById("view-" + name).classList.add("active");
+  btn.classList.add("active");
 }
 
 // Init
