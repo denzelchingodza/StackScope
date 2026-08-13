@@ -211,12 +211,12 @@ async function loadStats() {
     const el = document.getElementById("stat-salary");
     if (!el) return;
     const byCurrency = salary?.by_currency || {};
-    const order = ["USD", "ZAR", "GBP", "EUR"];
+    const order = ["ZAR", "USD", "GBP", "EUR"];
     const lines = order
       .filter(c => byCurrency[c])
       .map(c => {
-        const { symbol, mean } = byCurrency[c];
-        return `${symbol}${Math.round(mean).toLocaleString()} ${c}`;
+        const { symbol, median, count } = byCurrency[c];
+        return `${symbol}${Math.round(median).toLocaleString()} ${c}<span style="color:#94a3b8;font-size:10px"> (${count} jobs)</span>`;
       });
     el.innerHTML = lines.length
       ? lines.map(l => `<span style="display:block;font-size:13px;line-height:1.6">${l}<span style="color:#64748b;font-size:11px"> /mo</span></span>`).join("")
@@ -246,8 +246,8 @@ async function loadTrends() {
     const declining = data.filter(d => d.direction === "declining");
 
     if (risingEl) risingEl.textContent = rising.length
-      ? rising.length + " rising"
-      : "0 rising";
+      ? cap(rising[0].skill)
+      : "Stable";
 
     // Show top 4 rising + top 3 declining
     const rows = [
