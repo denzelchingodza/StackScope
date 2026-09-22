@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — StackScope</title>
+  <meta name="description" content="Privacy policy for StackScope — how we handle your data." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f9f7;
+      --text: #0a0a0a;
+      --sub: #525252;
+      --muted: #a3a3a3;
+      --border: #e8e8e6;
+      --blue: #0369a1;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .nav-brand { font-size: 14px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--sub); text-decoration: none;
+    }
+
+    /* Content */
+    main {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 64px 32px 100px;
+    }
+
+    .eyebrow {
+      font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--blue); opacity: 0.75; margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(22px, 4vw, 32px); font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 8px; color: var(--text);
+    }
+    .datestamp { font-size: 12px; color: var(--muted); margin-bottom: 52px; }
+
+    .section { margin-bottom: 36px; }
+    .section-title {
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px; font-weight: 600;
+    }
+    .section-body { font-size: 14px; color: var(--sub); line-height: 1.85; }
+
+    ul { padding-left: 20px; line-height: 2.1; }
+    li strong { color: var(--text); }
+
+    a.inline { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(3,105,161,0.3); padding-bottom: 1px; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    footer {
+      border-top: 1px solid var(--border); background: #fff;
+      padding: 16px 40px; display: flex; justify-content: space-between;
+      align-items: center; font-size: 11px; color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-brand">StackScope</a>
+    <a href="/" class="nav-back">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Back
+    </a>
+  </nav>
+
+  <main>
+    <p class="eyebrow">Legal</p>
+    <h1>Privacy Policy</h1>
+    <p class="datestamp">Last updated: September 2026</p>
+
+    <div class="section">
+      <div class="section-title">Overview</div>
+      <div class="section-body">
+        StackScope is an independent job market intelligence tool. It scrapes public job board
+        listings, processes them with NLP, and surfaces skill demand data. We collect the minimum
+        data necessary to operate and do not share or sell anything.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Data we collect</div>
+      <div class="section-body">
+        StackScope does not collect personal information from visitors. No account registration
+        is required. No cookies are used for tracking. The skill analyser runs entirely in your
+        browser and no skill selections are transmitted or stored anywhere.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Job data</div>
+      <div class="section-body">
+        Job postings are scraped from public APIs and RSS feeds and stored in our database for
+        analysis. We do not scrape or store any personal information about job applicants or
+        hiring managers — only the job listing content itself (title, skills, salary range, location).
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Analytics</div>
+      <div class="section-body">
+        This site may use Vercel Analytics to collect anonymised page view and performance data.
+        No cookies are used and no personal identifiers are collected. Vercel's
+        <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener" class="inline">privacy policy</a>
+        governs this data.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Third-party services</div>
+      <div class="section-body">
+        <ul>
+          <li><strong>Adzuna, Remotive, We Work Remotely, Jobspresso</strong> — public job data sources</li>
+          <li><strong>Vercel</strong> — hosting and edge delivery</li>
+          <li><strong>Render</strong> — backend hosting</li>
+        </ul>
+        <p style="margin-top: 12px;">
+          External links to job boards are provided for convenience and are governed by those
+          platforms' own privacy policies. StackScope is not affiliated with any of them.
+        </p>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="section">
+      <div class="section-title">Contact</div>
+      <div class="section-body">
+        Questions about this policy?
+        <a href="mailto:denzel.chingodza@icloud.com" class="inline">denzel.chingodza@icloud.com</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>© 2026 Denzel Chingodza</span>
+    <a href="/">StackScope</a>
+  </footer>
+
+</body>
+</html>
